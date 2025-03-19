@@ -1,4 +1,4 @@
-import React from 'react'
+import {useEffect,React} from 'react'
 import { Header } from '../components/Header'
 import { PromoBar } from '../components/PromoBar'
 import { HeroSection } from '../components/HeroSection'
@@ -7,6 +7,9 @@ import { ProductGrid } from '../components/ProductGrid'
 import Footer from '../components/ui/Footer'
 
 const Home = () => {
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   return (
    <div className="flex min-h-screen flex-col">
          {/* <Header/> */}
