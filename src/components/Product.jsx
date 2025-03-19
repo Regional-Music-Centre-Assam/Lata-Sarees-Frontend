@@ -228,15 +228,29 @@ export function ProductDetailPage() {
                 >
                   Quantity (in meters)
                 </label>
-                <input
-                  type="number"
-                  id="quantity"
-                  name="quantity"
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  min="1"
-                  className="mt-1 block w-1/5 p-2 border border-gray-300 rounded-md"
-                />
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
+                    className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    min="1"
+                    className="mt-1 block w-20 p-2 border border-gray-300 rounded-md text-center"
+                  />
+                  <button
+                    onClick={() => setQuantity((prev) => prev + 1)}
+                    className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             )}
 
