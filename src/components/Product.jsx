@@ -1,95 +1,187 @@
-import { Heart, Star, ShoppingCart, Truck, Shield, Leaf, ThumbsUp, ChevronRight } from "lucide-react";
-import { useParams } from 'react-router-dom';
-import prod_1 from '../assets/bs_1.webp';
-import prod_2 from '../assets/bs_2.webp';
-import prod_3 from '../assets/bs_3.webp';
-import prod_4 from '../assets/bs_4.webp';
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react"; // For managing selected quantity
+import { useParams } from "react-router-dom";
+import {
+  Heart,
+  Star,
+  ShoppingCart,
+  Truck,
+  Shield,
+  Leaf,
+  ThumbsUp,
+  ChevronRight,
+} from "lucide-react";
+import prod_1 from "../assets/bs_1.webp";
+import prod_2 from "../assets/bs_2.webp";
+import prod_3 from "../assets/bs_3.webp";
+import prod_4 from "../assets/bs_4.webp";
+import prod_5 from "../assets/bs_5.webp"; // Add appropriate image
+import { useCart } from "../context/UseCart";
+
 const products = [
   {
     id: 1,
     name: "Cotton Embroidery Fabric",
-    price: "₹1,999",
     image: prod_1,
+    category: "fabric", // Added category
     rating: 4.5,
     reviews: 12,
-    description: "This elegant cotton fabric features intricate embroidery, perfect for traditional wear. The soft texture and vibrant colors make it ideal for sarees, suits, and dresses.",
+    description:
+      "This elegant cotton fabric features intricate embroidery, perfect for traditional wear.",
     details: "Material: 100% Cotton | Care: Machine Washable",
     shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Hand wash with mild detergent. Do not bleach. Dry in shade.",
+    careInstructions:
+      "Hand wash with mild detergent. Do not bleach. Dry in shade.",
     quality: "Premium Quality Fabric",
     benefits: [
       "Breathable and comfortable",
       "Eco-friendly and sustainable",
       "Durable and long-lasting",
+    ],
+    pricing: [
+      { minQuantity: 1, maxQuantity: 4, price: 100 }, // 1-4 meters at ₹100 per meter
+      { minQuantity: 5, maxQuantity: 9, price: 90 }, // 5-9 meters at ₹90 per meter
+      { minQuantity: 10, maxQuantity: Infinity, price: 85 }, // 10+ meters at ₹85 per meter
     ],
   },
   {
     id: 2,
-    name: "Cotton Printed Fabric",
-    price: "₹1,499",
+    name: "Silk Printed Fabric",
     image: prod_2,
+    category: "fabric", // Added category
     rating: 4.2,
     reviews: 8,
-    description: "Soft and lightweight cotton fabric with a beautiful printed design. Perfect for casual and summer wear.",
-    details: "Material: 100% Cotton | Care: Hand Wash Recommended",
+    description:
+      "Luxurious silk fabric with a beautiful printed design, ideal for sarees and dresses.",
+    details: "Material: 100% Silk | Care: Dry Clean Only",
     shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Hand wash with mild detergent. Do not bleach. Dry in shade.",
+    careInstructions: "Dry clean only. Do not bleach.",
     quality: "Premium Quality Fabric",
     benefits: [
-      "Breathable and comfortable",
-      "Eco-friendly and sustainable",
-      "Durable and long-lasting",
+      "Soft and smooth texture",
+      "Elegant and luxurious",
+      "Perfect for special occasions",
+    ],
+    pricing: [
+      { minQuantity: 1, maxQuantity: 4, price: 200 }, // 1-4 meters at ₹200 per meter
+      { minQuantity: 5, maxQuantity: 9, price: 180 }, // 5-9 meters at ₹180 per meter
+      { minQuantity: 10, maxQuantity: Infinity, price: 170 }, // 10+ meters at ₹170 per meter
     ],
   },
   {
     id: 3,
-    name: "Cotton Printed Fabric",
-    price: "₹1,499",
+    name: "Linen Blend Fabric",
     image: prod_3,
-    rating: 4.2,
-    reviews: 8,
-    description: "Soft and lightweight cotton fabric with a beautiful printed design. Perfect for casual and summer wear.",
-    details: "Material: 100% Cotton | Care: Hand Wash Recommended",
+    category: "fabric", // Added category
+    rating: 4.0,
+    reviews: 10,
+    description:
+      "A blend of linen and cotton, perfect for summer wear and casual outfits.",
+    details: "Material: 70% Linen, 30% Cotton | Care: Machine Washable",
     shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Hand wash with mild detergent. Do not bleach. Dry in shade.",
+    careInstructions: "Machine wash with mild detergent. Do not bleach.",
     quality: "Premium Quality Fabric",
     benefits: [
-      "Breathable and comfortable",
+      "Breathable and lightweight",
       "Eco-friendly and sustainable",
       "Durable and long-lasting",
+    ],
+    pricing: [
+      { minQuantity: 1, maxQuantity: 4, price: 200 }, // 1-4 meters at ₹200 per meter
+      { minQuantity: 5, maxQuantity: 9, price: 180 }, // 5-9 meters at ₹180 per meter
+      { minQuantity: 10, maxQuantity: Infinity, price: 170 }, // 10+ meters at ₹170 per meter
     ],
   },
   {
     id: 4,
-    name: "Cotton Printed Fabric",
-    price: "₹1,499",
+    name: "Wool Blend Fabric",
     image: prod_4,
-    rating: 4.2,
-    reviews: 8,
-    description: "Soft and lightweight cotton fabric with a beautiful printed design. Perfect for casual and summer wear.",
-    details: "Material: 100% Cotton | Care: Hand Wash Recommended",
+    category: "fabric", // Added category
+    rating: 4.3,
+    reviews: 15,
+    description:
+      "Warm and cozy wool blend fabric, ideal for winter wear and blankets.",
+    details: "Material: 80% Wool, 20% Acrylic | Care: Hand Wash Recommended",
     shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Hand wash with mild detergent. Do not bleach. Dry in shade.",
+    careInstructions: "Hand wash with mild detergent. Do not bleach.",
     quality: "Premium Quality Fabric",
     benefits: [
-      "Breathable and comfortable",
-      "Eco-friendly and sustainable",
+      "Warm and cozy",
+      "Perfect for winter wear",
       "Durable and long-lasting",
     ],
+    pricing: [
+      { quantity: 1, price: 300 }, // 1 meter at ₹300
+      { quantity: 5, price: 280 }, // 5 meters at ₹280 per meter
+      { quantity: 10, price: 260 }, // 10 meters at ₹260 per meter
+    ],
   },
-
+  {
+    id: 5,
+    name: "Leather Handbag",
+    image: prod_4, // Add appropriate image
+    category: "accessories", // Added category
+    rating: 4.7,
+    reviews: 20,
+    description: "A stylish leather handbag, perfect for everyday use.",
+    details: "Material: Genuine Leather | Care: Wipe with a damp cloth",
+    shipping: "Free shipping on orders above ₹2,000",
+    careInstructions: "Avoid exposure to water and direct sunlight.",
+    quality: "Premium Quality Leather",
+    benefits: [
+      "Durable and long-lasting",
+      "Stylish and versatile",
+      "Perfect for all occasions",
+    ],
+    price: "₹2,500", // Fixed price for non-fabric products
+  },
 ];
-
 export function ProductDetailPage() {
-  const { id } = useParams(); 
+  const { id } = useParams();
+  const { addToCart } = useCart(); // Use the cart context
   const product = products.find((p) => p.id === parseInt(id));
+  const [quantity, setQuantity] = useState(1); // State for selected quantity
+
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to the top
-  }, [id]); 
+    window.scrollTo(0, 0);
+  }, [id]);
+
   if (!product) {
     return <div>Product not found</div>;
   }
+
+  // Check if the product is in the "fabric" category
+  const isFabric = product.category === "fabric";
+
+  // Calculate the price based on the quantity (for fabric products)
+  const calculatePrice = (quantity) => {
+    if (!isFabric) return parseFloat(product.price.replace(/[^0-9.-]+/g, "")); // Fixed price for non-fabric products
+
+    const pricing = product.pricing.find(
+      (p) => quantity >= p.minQuantity && quantity <= p.maxQuantity
+    );
+    return pricing ? pricing.price : 0; // Default to 0 if no pricing is found
+  };
+
+  const price = calculatePrice(quantity); // Price per unit
+  const totalPrice = price * quantity; // Total price for the selected quantity
+
+  // Handle quantity change
+  const handleQuantityChange = (event) => {
+    const newQuantity = parseInt(event.target.value);
+    if (newQuantity > 0) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  // Add to cart
+  const handleAddToCart = () => {
+    const item = {
+      ...product,
+      quantity: quantity, // Selected quantity
+      price: isFabric ? `₹${totalPrice}` : product.price, // Total price for fabric products, fixed price for others
+    };
+    addToCart(item);
+  };
 
   return (
     <div className="bg-white py-12 px-4 sm:px-[5vh] md:px-[7vh] lg:px-[9vh]">
@@ -115,19 +207,61 @@ export function ProductDetailPage() {
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`h-5 w-5 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                  className={`h-5 w-5 ${
+                    i < Math.floor(product.rating)
+                      ? "text-yellow-400"
+                      : "text-gray-300"
+                  }`}
                 />
               ))}
-              <span className="ml-2 text-sm text-gray-500">({product.reviews} reviews)</span>
+              <span className="ml-2 text-sm text-gray-500">
+                ({product.reviews} reviews)
+              </span>
             </div>
-            <p className="text-2xl font-semibold">{product.price}</p>
+
+            {/* Quantity Input (for fabric products) */}
+            {isFabric && (
+              <div className="space-y-4">
+                <label
+                  htmlFor="quantity"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Quantity (in meters)
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  min="1"
+                  className="mt-1 block w-1/5 p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            )}
+
+            {/* Price Display */}
+            <p className="text-2xl font-semibold">
+              {isFabric ? (
+                <>
+                  Total Price: ₹{totalPrice}{" "}
+                  <span className="text-sm text-gray-500">
+                    (₹{price} per meter)
+                  </span>
+                </>
+              ) : (
+                `${product.price}`
+              )}
+            </p>
 
             {/* Quality Bar */}
             <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
               <Leaf className="h-6 w-6 text-green-600" />
               <div>
                 <p className="font-medium">{product.quality}</p>
-                <p className="text-sm text-gray-500">Eco-friendly and sustainable</p>
+                <p className="text-sm text-gray-500">
+                  Eco-friendly and sustainable
+                </p>
               </div>
             </div>
 
@@ -170,19 +304,24 @@ export function ProductDetailPage() {
               <Shield className="h-6 w-6 text-purple-600" />
               <div>
                 <p className="font-medium">Care Instructions</p>
-                <p className="text-sm text-gray-500">{product.careInstructions}</p>
+                <p className="text-sm text-gray-500">
+                  {product.careInstructions}
+                </p>
               </div>
             </div>
 
             {/* Add to Cart Button */}
-            <button className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors">
+            <button
+              onClick={handleAddToCart}
+              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors"
+            >
               <ShoppingCart className="h-5 w-5" />
               <span>Add to Cart</span>
             </button>
+            
           </div>
         </div>
-
-        {/* Customer Reviews Section */}
+                
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
           <div className="space-y-6">
@@ -210,6 +349,7 @@ export function ProductDetailPage() {
             <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
               <span>View All Reviews</span>
               <ChevronRight className="h-5 w-5" />
+              
             </button>
           </div>
         </div>

@@ -13,8 +13,11 @@ import {
 } from "./ui/NavMenu";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/Sheet";
 import { Input } from "./ui/Input";
+import { useCart } from "../context/UseCart";
 
 export function Header() {
+  const { toggleCart, cart } = useCart();
+  
   return (
     <header className="sticky top-0 z-50 w-full  bg-white">
       <div className="container flex h-16 items-center px-4">
@@ -30,14 +33,14 @@ export function Header() {
               <Link to="/" className="text-lg font-semibold">
                 New Arrivals
               </Link>
-              <Link to="/" className="text-lg font-semibold">
+              {/* <Link to="/" className="text-lg font-semibold">
                 Jewelry
-              </Link>
+              </Link> */}
               <Link to="/" className="text-lg font-semibold">
                 Accessories
               </Link>
               <Link to="/" className="text-lg font-semibold">
-                Gift Store
+                Textile
               </Link>
             </nav>
           </SheetContent>
@@ -65,7 +68,7 @@ export function Header() {
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-              <NavigationMenuItem>
+              {/* <NavigationMenuItem>
                 <NavigationMenuTrigger>Jewelry</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
@@ -97,7 +100,7 @@ export function Header() {
                     </div>
                   </div>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Accessories</NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -129,7 +132,7 @@ export function Header() {
                     className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-rose-700 hover:text-white focus:bg-rose-700 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-rose-700/50 data-[state=open]:bg-rose-700/50"
                     to="/"
                   >
-                    Gift Store
+                    Textile
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -152,10 +155,18 @@ export function Header() {
             <Heart className="h-5 w-5" />
             <span className="sr-only">Wishlist</span>
           </Button>
-          <Button variant="ghost" size="icon">
+          {/* <Button variant="ghost" size="icon">
             <ShoppingCart className="h-5 w-5" />
             <span className="sr-only">Cart</span>
-          </Button>
+          </Button> */}
+          <Button variant="ghost" size="icon" onClick={toggleCart} className="relative p-2 hover:bg-gray-100 ">
+          <ShoppingCart className="h-5 w-5" />
+          {cart.length > 0 && (
+            <span className="absolute top-0 right-0 bg-pink-500 text-white text-xs rounded-full px-1.5 py-0.5">
+              {cart.length}
+            </span>
+          )}
+        </Button>
         </div>
       </div>
     </header>

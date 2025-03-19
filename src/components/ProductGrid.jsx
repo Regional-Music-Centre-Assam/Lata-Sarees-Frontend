@@ -30,14 +30,25 @@ const products = [
     rating: 4.7,
     reviews: 15,
   },
-  {
-    id: 4,
-    name: "Cotton elegant Fabric",
-    price: "₹1,799",
-    image: prod_4,
-    rating: 4.4,
-    reviews: 10,
-  },
+    {
+      id: 5,
+      name: "Leather Handbag",
+      image: prod_4, // Add appropriate image
+      category: "accessories", // Added category
+      rating: 4.7,
+      reviews: 20,
+      description: "A stylish leather handbag, perfect for everyday use.",
+      details: "Material: Genuine Leather | Care: Wipe with a damp cloth",
+      shipping: "Free shipping on orders above ₹2,000",
+      careInstructions: "Avoid exposure to water and direct sunlight.",
+      quality: "Premium Quality Leather",
+      benefits: [
+        "Durable and long-lasting",
+        "Stylish and versatile",
+        "Perfect for all occasions",
+      ],
+      price: "₹2,500", // Fixed price for non-fabric products
+    },
 ];
 
 export function ProductGrid() {

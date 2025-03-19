@@ -1,53 +1,115 @@
-import cat_1 from '../assets/silk.jpg';
-import cat_2 from '../assets/rayon.jpg';
-import cat_3 from '../assets/printed.jpg';
-import cat_4 from '../assets/cot.jpg';
-import cat_5 from '../assets/linen.jpg';
+import React, { useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import cat_1 from "../assets/silk.jpg";
+import cat_2 from "../assets/rayon.jpg";
+import cat_3 from "../assets/printed.jpg";
+import cat_4 from "../assets/cot.jpg";
+import cat_5 from "../assets/linen.jpg";
+import prod_1 from "../assets/bs_1.webp";
+import prod_2 from "../assets/bs_2.webp";
+import prod_3 from "../assets/bs_3.webp";
+import prod_4 from "../assets/bs_4.webp";
+
 const categories = [
   {
-    name: "Silk",
+    name: "Printed fabrics",
     image: cat_1,
+    variant: "",
   },
   {
-    name: "Rayon",
+    name: "Plain fabrics",
     image: cat_2,
   },
   {
-    name: "Printed",
+    name: "Embroidered",
     image: cat_3,
   },
   {
-    name: "Cotton",
+    name: "Sarees",
     image: cat_4,
   },
   {
-    name: "Linen",
+    name: "Suits",
     image: cat_5,
   },
-]
+  {
+    name: "Bandhej & leheria",
+    image: prod_1,
+  },
+  {
+    name: "Readymades",
+    image: prod_2,
+  },
+  {
+    name: "Bedsheets",
+    image: prod_4,
+  },
+  {
+    name: "Accessories",
+    image: prod_3,
+  },
+  {
+    name: "Work Materials",
+    image: cat_2,
+  },
+];
 
 export function FeaturedCategories() {
-  return (
-    <section className="py-12">
-    <div className="container mx-auto">
-      <h2 className="mb-8 text-2xl font-bold">Shop by Category</h2>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {categories.map((category) => (
-          <a key={category.name} href="/" className="group flex flex-col items-center">
-            <div className="relative aspect-square w-full overflow-hidden rounded-full">
-              <img
-                src={category.image || "/placeholder.svg"}
-                alt={category.name}
-                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
-              />
-            </div>
-            <span className="mt-2 text-lg text-gray-500 font-medium text-center">{category.name}</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-  
-  )
-}
+  const carouselRef = useRef(null);
 
+  const scrollLeft = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: -200, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: 200, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <section className="py-12 relative">
+              {/* <h2 className="mb-8 text-2xl font-bold">Shop by Category</h2> */}
+
+      <div className="container mx-auto">
+        <h2 className="mb-8 text-2xl font-bold">Shop by Category</h2>
+        <div className="relative">
+          <button onClick={scrollLeft}className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg z-10"          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={scrollRight}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg z-10"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+          <div
+            ref={carouselRef}
+            className="flex overflow-x-auto scroll-snap-type-x-mandatory space-x-4 scrollbar-custom"
+          >
+            {categories.map((category) => (
+              <a
+                key={category.name}
+                href="/"
+                className="group flex-shrink-0 md:w-48 w-40 lg:w-52  flex flex-col items-center scroll-snap-align-start"
+              >
+                <div className="relative aspect-square w-full overflow-hidden rounded-full">
+                  <img
+                    src={category.image || "/placeholder.svg"}
+                    alt={category.name}
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+                <span className="mt-2 text-lg text-gray-500 font-medium text-center">
+                  {category.name}
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
