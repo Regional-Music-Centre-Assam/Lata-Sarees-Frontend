@@ -10,139 +10,125 @@ import {
   ThumbsUp,
   ChevronRight,
 } from "lucide-react";
+import { fetchProductById } from '../Api'; 
 import prod_1 from "../assets/bs_1.webp";
 import prod_2 from "../assets/bs_2.webp";
 import prod_3 from "../assets/bs_3.webp";
 import prod_4 from "../assets/bs_4.webp";
-import prod_5 from "../assets/bs_5.webp"; // Add appropriate image
+import prod_5 from "../assets/bs_5.webp";
 import { useCart } from "../context/UseCart";
 
-const products = [
-  {
-    id: 1,
-    name: "Cotton Embroidery Fabric",
-    image: prod_1,
-    category: "fabric", // Added category
-    rating: 4.5,
-    reviews: 12,
-    description:
-      "This elegant cotton fabric features intricate embroidery, perfect for traditional wear.",
-    details: "Material: 100% Cotton | Care: Machine Washable",
-    shipping: "Free shipping on orders above ₹2,000",
-    careInstructions:
-      "Hand wash with mild detergent. Do not bleach. Dry in shade.",
-    quality: "Premium Quality Fabric",
-    benefits: [
-      "Breathable and comfortable",
-      "Eco-friendly and sustainable",
-      "Durable and long-lasting",
-    ],
-    pricing: [
-      { minQuantity: 1, maxQuantity: 4, price: 100 }, // 1-4 meters at ₹100 per meter
-      { minQuantity: 5, maxQuantity: 9, price: 90 }, // 5-9 meters at ₹90 per meter
-      { minQuantity: 10, maxQuantity: Infinity, price: 85 }, // 10+ meters at ₹85 per meter
-    ],
-  },
-  {
-    id: 2,
-    name: "Silk Printed Fabric",
-    image: prod_2,
-    category: "fabric", // Added category
-    rating: 4.2,
-    reviews: 8,
-    description:
-      "Luxurious silk fabric with a beautiful printed design, ideal for sarees and dresses.",
-    details: "Material: 100% Silk | Care: Dry Clean Only",
-    shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Dry clean only. Do not bleach.",
-    quality: "Premium Quality Fabric",
-    benefits: [
-      "Soft and smooth texture",
-      "Elegant and luxurious",
-      "Perfect for special occasions",
-    ],
-    pricing: [
-      { minQuantity: 1, maxQuantity: 4, price: 200 }, // 1-4 meters at ₹200 per meter
-      { minQuantity: 5, maxQuantity: 9, price: 180 }, // 5-9 meters at ₹180 per meter
-      { minQuantity: 10, maxQuantity: Infinity, price: 170 }, // 10+ meters at ₹170 per meter
-    ],
-  },
-  {
-    id: 3,
-    name: "Linen Blend Fabric",
-    image: prod_3,
-    category: "fabric", // Added category
-    rating: 4.0,
-    reviews: 10,
-    description:
-      "A blend of linen and cotton, perfect for summer wear and casual outfits.",
-    details: "Material: 70% Linen, 30% Cotton | Care: Machine Washable",
-    shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Machine wash with mild detergent. Do not bleach.",
-    quality: "Premium Quality Fabric",
-    benefits: [
-      "Breathable and lightweight",
-      "Eco-friendly and sustainable",
-      "Durable and long-lasting",
-    ],
-    pricing: [
-      { minQuantity: 1, maxQuantity: 4, price: 200 }, // 1-4 meters at ₹200 per meter
-      { minQuantity: 5, maxQuantity: 9, price: 180 }, // 5-9 meters at ₹180 per meter
-      { minQuantity: 10, maxQuantity: Infinity, price: 170 }, // 10+ meters at ₹170 per meter
-    ],
-  },
-  {
-    id: 4,
-    name: "Wool Blend Fabric",
-    image: prod_4,
-    category: "fabric", // Added category
-    rating: 4.3,
-    reviews: 15,
-    description:
-      "Warm and cozy wool blend fabric, ideal for winter wear and blankets.",
-    details: "Material: 80% Wool, 20% Acrylic | Care: Hand Wash Recommended",
-    shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Hand wash with mild detergent. Do not bleach.",
-    quality: "Premium Quality Fabric",
-    benefits: [
-      "Warm and cozy",
-      "Perfect for winter wear",
-      "Durable and long-lasting",
-    ],
-    pricing: [
-      { quantity: 1, price: 300 }, // 1 meter at ₹300
-      { quantity: 5, price: 280 }, // 5 meters at ₹280 per meter
-      { quantity: 10, price: 260 }, // 10 meters at ₹260 per meter
-    ],
-  },
-  {
-    id: 5,
-    name: "Leather Handbag",
-    image: prod_4, // Add appropriate image
-    category: "accessories", // Added category
-    rating: 4.7,
-    reviews: 20,
-    description: "A stylish leather handbag, perfect for everyday use.",
-    details: "Material: Genuine Leather | Care: Wipe with a damp cloth",
-    shipping: "Free shipping on orders above ₹2,000",
-    careInstructions: "Avoid exposure to water and direct sunlight.",
-    quality: "Premium Quality Leather",
-    benefits: [
-      "Durable and long-lasting",
-      "Stylish and versatile",
-      "Perfect for all occasions",
-    ],
-    price: "₹2,500", // Fixed price for non-fabric products
-  },
-];
+// const products = [
+//   {
+//     id: 1,
+//     name: "Cotton Embroidery Fabric",
+//     image: "https://saroj.in/cdn/shop/files/WhatsAppImage2025-02-20at17.02.22_370c320d.jpg",
+//     category: "fabric", // Added category
+//     rating: 4.5,
+//     reviews: 12,
+//     description:
+//       "This elegant cotton fabric features intricate embroidery, perfect for traditional wear.",
+//     details: "Material: 100% Cotton | Care: Machine Washable",
+//     shipping: "Free shipping on orders above ₹2,000",
+//     careInstructions:
+//       "Hand wash with mild detergent. Do not bleach. Dry in shade.",
+//     quality: "Premium Quality Fabric",
+//     benefits: [
+//       "Breathable and comfortable",
+//       "Eco-friendly and sustainable",
+//       "Durable and long-lasting",
+//     ],
+//     pricing: [
+//       { minQuantity: 1, maxQuantity: 4, price: 100 }, // 1-4 meters at ₹100 per meter
+//       { minQuantity: 5, maxQuantity: 9, price: 90 }, // 5-9 meters at ₹90 per meter
+//       { minQuantity: 10, maxQuantity: Infinity, price: 85 }, // 10+ meters at ₹85 per meter
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "Silk Printed Fabric",
+//     image:"https://saroj.in/cdn/shop/files/WhatsAppImage2024-04-19at7.49.57PM_f16b0018-d64e-447b-a413-f38cbc3cde60.jpg",
+//     category: "fabric", // Added category
+//     rating: 4.2,
+//     reviews: 8,
+//     description:
+//       "Luxurious silk fabric with a beautiful printed design, ideal for sarees and dresses.",
+//     details: "Material: 100% Silk | Care: Dry Clean Only",
+//     shipping: "Free shipping on orders above ₹2,000",
+//     careInstructions: "Dry clean only. Do not bleach.",
+//     quality: "Premium Quality Fabric",
+//     benefits: [
+//       "Soft and smooth texture",
+//       "Elegant and luxurious",
+//       "Perfect for special occasions",
+//     ],
+//     pricing: [
+//       { minQuantity: 1, maxQuantity: 4, price: 200 }, // 1-4 meters at ₹200 per meter
+//       { minQuantity: 5, maxQuantity: 9, price: 180 }, // 5-9 meters at ₹180 per meter
+//       { minQuantity: 10, maxQuantity: Infinity, price: 170 }, // 10+ meters at ₹170 per meter
+//     ],
+//   },
+//   {
+//     id: 3,
+//     name: "Linen Blend Fabric",
+//     image: "https://saroj.in/cdn/shop/files/rn-image_picker_lib_temp_12f57afc-5bf3-4797-927e-efbd9250fdca.jpg",
+//     category: "fabric", // Added category
+//     rating: 4.0,
+//     reviews: 10,
+//     description:
+//       "A blend of linen and cotton, perfect for summer wear and casual outfits.",
+//     details: "Material: 70% Linen, 30% Cotton | Care: Machine Washable",
+//     shipping: "Free shipping on orders above ₹2,000",
+//     careInstructions: "Machine wash with mild detergent. Do not bleach.",
+//     quality: "Premium Quality Fabric",
+//     benefits: [
+//       "Breathable and lightweight",
+//       "Eco-friendly and sustainable",
+//       "Durable and long-lasting",
+//     ],
+//     pricing: [
+//       { minQuantity: 1, maxQuantity: 4, price: 200 }, // 1-4 meters at ₹200 per meter
+//       { minQuantity: 5, maxQuantity: 9, price: 180 }, // 5-9 meters at ₹180 per meter
+//       { minQuantity: 10, maxQuantity: Infinity, price: 170 }, // 10+ meters at ₹170 per meter
+//     ],
+//   },
+
+//   {
+//     id: 5,
+//     name: "Leather Handbag",
+//     image: "https://saroj.in/cdn/shop/files/WhatsAppImage2025-02-20at17.21.20_5429d655.jpg", // Add appropriate image
+//     category: "accessories", 
+//     rating: 4.7,
+//     reviews: 20,
+//     description: "A stylish leather handbag, perfect for everyday use.",
+//     details: "Material: Genuine Leather | Care: Wipe with a damp cloth",
+//     shipping: "Free shipping on orders above ₹2,000",
+//     careInstructions: "Avoid exposure to water and direct sunlight.",
+//     quality: "Premium Quality Leather",
+//     benefits: [
+//       "Durable and long-lasting",
+//       "Stylish and versatile",
+//       "Perfect for all occasions",
+//     ],
+//     price: "₹2,500", 
+//   },
+// ];
 export function ProductDetailPage() {
   const { id } = useParams();
   const { addToCart } = useCart(); // Use the cart context
-  const product = products.find((p) => p.id === parseInt(id));
-  const [quantity, setQuantity] = useState(1); // State for selected quantity
+  const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1); 
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [id]);
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      const data = await fetchProductById(id);
+      setProduct(data);
+    };
+    loadProduct();
   }, [id]);
 
   if (!product) {

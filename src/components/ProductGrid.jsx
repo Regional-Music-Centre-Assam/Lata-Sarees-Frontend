@@ -4,54 +4,74 @@ import prod_2 from '../assets/bs_2.webp';
 import prod_3 from '../assets/bs_3.webp';
 import prod_4 from '../assets/bs_4.webp';
 import { Link } from 'react-router-dom'; 
+import { useEffect, useState } from "react";
 import banner_1_large from '../assets/Banner1_lg.jpg';
-const products = [
-  {
-    id: 1,
-    name: "Cotton Embroidery Fabric",
-    price: "₹1,999",
-    image: prod_1,
-    rating: 4.5,
-    reviews: 12,
-  },
-  {
-    id: 2,
-    name: "Cotton printed Fabric",
-    price: "₹1,499",
-    image: prod_2,
-    rating: 4.2,
-    reviews: 8,
-  },
-  {
-    id: 3,
-    name: "Cotton glow Fabric",
-    price: "₹2,999",
-    image: prod_3,
-    rating: 4.7,
-    reviews: 15,
-  },
-    {
-      id: 5,
-      name: "Leather Handbag",
-      image: prod_4, // Add appropriate image
-      category: "accessories", // Added category
-      rating: 4.7,
-      reviews: 20,
-      description: "A stylish leather handbag, perfect for everyday use.",
-      details: "Material: Genuine Leather | Care: Wipe with a damp cloth",
-      shipping: "Free shipping on orders above ₹2,000",
-      careInstructions: "Avoid exposure to water and direct sunlight.",
-      quality: "Premium Quality Leather",
-      benefits: [
-        "Durable and long-lasting",
-        "Stylish and versatile",
-        "Perfect for all occasions",
-      ],
-      price: "₹2,500", // Fixed price for non-fabric products
-    },
-];
+import { fetchProductById } from '../Api'; 
+// const products = [
+//   {
+//     id: 1,
+//     name: "Cotton Embroidery Fabric",
+//     price: "₹1,999",
+//     image: "https://saroj.in/cdn/shop/files/WhatsAppImage2025-02-20at17.02.22_370c320d.jpg",
+//     rating: 4.5,
+//     reviews: 12,
+//   },
+//   {
+//     id: 2,
+//     name: "Silk Printed Fabric",
+//     price: "₹1,499",
+//     image: "https://saroj.in/cdn/shop/files/WhatsAppImage2024-04-19at7.49.57PM_f16b0018-d64e-447b-a413-f38cbc3cde60.jpg",
+//     rating: 4.2,
+//     reviews: 8,
+//   },
+//   {
+//     id: 3,
+//     name: "Linen Blend Fabric",
+//     price: "₹2,999",
+//     image: "https://saroj.in/cdn/shop/files/rn-image_picker_lib_temp_12f57afc-5bf3-4797-927e-efbd9250fdca.jpg",
+//     rating: 4.7,
+//     reviews: 15,
+//   },
+//     {
+//       id: 5,
+//       name: "Leather Handbag",
+//       image: "https://saroj.in/cdn/shop/files/WhatsAppImage2025-02-20at17.21.20_5429d655.jpg",  // Add appropriate image
+//       category: "accessories", // Added category
+//       rating: 4.7,
+//       reviews: 20,
+//       description: "A stylish leather handbag, perfect for everyday use.",
+//       details: "Material: Genuine Leather | Care: Wipe with a damp cloth",
+//       shipping: "Free shipping on orders above ₹2,000",
+//       careInstructions: "Avoid exposure to water and direct sunlight.",
+//       quality: "Premium Quality Leather",
+//       benefits: [
+//         "Durable and long-lasting",
+//         "Stylish and versatile",
+//         "Perfect for all occasions",
+//       ],
+//       price: "₹2,500", // Fixed price for non-fabric products
+//     },
+// ];
 
 export function ProductGrid() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+   
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/products.json');
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+
   return (
     <div className="bg-white">
      

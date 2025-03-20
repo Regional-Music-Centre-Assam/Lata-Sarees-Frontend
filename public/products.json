@@ -1,0 +1,90 @@
+[
+    {
+      "id": 1,
+      "name": "Cotton Embroidery Fabric",
+      "image": "https://saroj.in/cdn/shop/files/WhatsAppImage2025-02-20at17.02.22_370c320d.jpg",
+      "category": "fabric",
+      "rating": 4.5,
+      "reviews": 12,
+      "description": "This elegant cotton fabric features intricate embroidery, perfect for traditional wear.",
+      "details": "Material: 100% Cotton | Care: Machine Washable",
+      "shipping": "Free shipping on orders above ₹2,000",
+      "careInstructions": "Hand wash with mild detergent. Do not bleach. Dry in shade.",
+      "quality": "Premium Quality Fabric",
+      "benefits": [
+        "Breathable and comfortable",
+        "Eco-friendly and sustainable",
+        "Durable and long-lasting"
+      ],
+      "pricing": [
+        { "minQuantity": 1, "maxQuantity": 4, "price": 100 },
+        { "minQuantity": 5, "maxQuantity": 9, "price": 90 },
+        { "minQuantity": 10, "maxQuantity": 300, "price": 85 }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Silk Printed Fabric",
+      "image": "https://saroj.in/cdn/shop/files/WhatsAppImage2024-04-19at7.49.57PM_f16b0018-d64e-447b-a413-f38cbc3cde60.jpg",
+      "category": "fabric",
+      "rating": 4.2,
+      "reviews": 8,
+      "description": "Luxurious silk fabric with a beautiful printed design, ideal for sarees and dresses.",
+      "details": "Material: 100% Silk | Care: Dry Clean Only",
+      "shipping": "Free shipping on orders above ₹2,000",
+      "careInstructions": "Dry clean only. Do not bleach.",
+      "quality": "Premium Quality Fabric",
+      "benefits": [
+        "Soft and smooth texture",
+        "Elegant and luxurious",
+        "Perfect for special occasions"
+      ],
+      "pricing": [
+        { "minQuantity": 1, "maxQuantity": 4, "price": 200 },
+        { "minQuantity": 5, "maxQuantity": 9, "price": 180 },
+        { "minQuantity": 10, "maxQuantity": 300, "price": 170 }
+      ]
+    },
+    {
+        "id": 3,
+        "name": "Linen Blend Fabric",
+        "image": "https://saroj.in/cdn/shop/files/rn-image_picker_lib_temp_12f57afc-5bf3-4797-927e-efbd9250fdca.jpg",
+        "category": "fabric",
+        "rating": 4.0,
+        "reviews": 10,
+        "description": "Luxurious silk fabric with a beautiful printed design, ideal for sarees and dresses.",
+        "details": "Material: 100% Silk | Care: Dry Clean Only",
+        "shipping": "Free shipping on orders above ₹2,000",
+        "careInstructions": "Dry clean only. Do not bleach.",
+        "quality": "Premium Quality Fabric",
+        "benefits": [
+          "Soft and smooth texture",
+          "Elegant and luxurious",
+          "Perfect for special occasions"
+        ],
+        "pricing": [
+          { "minQuantity": 1, "maxQuantity": 4, "price": 200 },
+          { "minQuantity": 5, "maxQuantity": 9, "price": 180 },
+          { "minQuantity": 10, "maxQuantity": 300, "price": 170 }
+        ]
+      },
+    {
+      "id": 5,
+      "name": "Leather Handbag",
+      "image": "https://saroj.in/cdn/shop/files/WhatsAppImage2025-02-20at17.21.20_5429d655.jpg",
+      "category": "accessories",
+      "rating": 4.7,
+      "reviews": 20,
+      "description": "A stylish leather handbag, perfect for everyday use.",
+      "details": "Material: Genuine Leather | Care: Wipe with a damp cloth",
+      "shipping": "Free shipping on orders above ₹2,000",
+      "careInstructions": "Avoid exposure to water and direct sunlight.",
+      "quality": "Premium Quality Leather",
+      "benefits": [
+        "Durable and long-lasting",
+        "Stylish and versatile",
+        "Perfect for all occasions"
+      ],
+      "price": "₹2,499"
+    }
+  ]
