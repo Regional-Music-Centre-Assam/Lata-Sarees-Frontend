@@ -9,6 +9,7 @@ import banner_2_large from '../assets/Banner2_lg.jpg';
 import banner_2_sm from '../assets/Banner2_sm.jpg';
 import banner_3_large from '../assets/Banner3_lg.jpg';
 import banner_3_sm from '../assets/Banner3_sm.jpg';
+import { Link } from "react-router-dom";
 
 const slides = [
   {
@@ -105,12 +106,16 @@ export function HeroSection() {
               <div className="container flex h-full flex-col items-center justify-center gap-4 text-center text-white">
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">{slide.title}</h1>
                 <p className="max-w-[600px] text-gray-200 md:text-xl">{slide.description}</p>
+                
+                <Link to='/ourcollection'>
                 <Button
                   className="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-6 rounded-lg"
                   size="lg"
                 >
                   {slide.buttonText}
                 </Button>
+                </Link>
+                
               </div>
             </div>
           </div>

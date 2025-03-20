@@ -11,6 +11,8 @@ import { CartProvider } from "./context/UseCart"
 import { CartSidebar } from "./components/CartSidebar"
 import { Checkout } from "./components/Checkout"
 import { PlaceOrder } from "./components/PlaceOrder"
+import { OurCollection } from "./components/OurCollection"
+import { MyOrders } from "./components/MyOrders"
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/checkout" element={<Checkout/>}/>
         <Route path="/placeorder" element={<PlaceOrder/>}/>
+        <Route path="/ourcollection" element={<OurCollection/>}/>
+        <Route path="/myorders" element={<MyOrders/>}/>     
       </Routes>
       <Footer/>
     </div>

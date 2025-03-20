@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"; // For managing selected quantity
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import {
   Heart,
   Star,
@@ -9,8 +9,9 @@ import {
   Leaf,
   ThumbsUp,
   ChevronRight,
+  LoaderCircle
 } from "lucide-react";
-import { fetchProductById } from '../Api'; 
+import { fetchProductById,fetchProducts } from '../Api'; 
 import prod_1 from "../assets/bs_1.webp";
 import prod_2 from "../assets/bs_2.webp";
 import prod_3 from "../assets/bs_3.webp";
@@ -118,21 +119,34 @@ export function ProductDetailPage() {
   const { addToCart } = useCart(); // Use the cart context
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1); 
-
+  const [relatedProducts, setRelatedProducts] = useState([]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
   useEffect(() => {
     const loadProduct = async () => {
-      const data = await fetchProductById(id);
-      setProduct(data);
+      try {
+        const data = await fetchProductById(id);
+        setProduct(data);
+
+        // Fetch related products
+        const allProducts = await fetchProducts();
+        const related = allProducts.filter(
+          (p) => p.category === data.category && p.id !== data.id // Same category but not the current product
+        );
+        setRelatedProducts(related);
+      } catch (error) {
+        console.error('Error loading product:', error);
+      }
     };
     loadProduct();
   }, [id]);
 
   if (!product) {
-    return <div>Product not found</div>;
+    return    <div className="flex justify-center items-center h-[400px]">
+    <LoaderCircle className="animate-spin h-16 w-16 text-pink-500" />
+  </div>;
   }
 
   // Check if the product is in the "fabric" category
@@ -300,7 +314,7 @@ export function ProductDetailPage() {
             </div>
 
             {/* Care Instructions */}
-            <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
+            {/* <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
               <Shield className="h-6 w-6 text-purple-600" />
               <div>
                 <p className="font-medium">Care Instructions</p>
@@ -308,7 +322,7 @@ export function ProductDetailPage() {
                   {product.careInstructions}
                 </p>
               </div>
-            </div>
+            </div> */}
 
             {/* Add to Cart Button */}
             <button
@@ -353,6 +367,45 @@ export function ProductDetailPage() {
             </button>
           </div>
         </div>
+
+            {/* Related Products Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Related Products</h2>
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {relatedProducts.map((relatedProduct) => (
+              <div key={relatedProduct.id} className="group relative">
+                <Link
+                  to={`/product/${relatedProduct.id}`}
+                  className="relative block aspect-square"
+                >
+                  <img
+                    src={relatedProduct.image}
+                    alt={relatedProduct.name}
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <button className="absolute right-2 top-2 p-2 bg-white rounded-full opacity-0 transition-opacity group-hover:opacity-100">
+                    <Heart className="h-5 w-5" />
+                    <span className="sr-only">Add to wishlist</span>
+                  </button>
+                </Link>
+                <div className="mt-4 space-y-1">
+                  <h3 className="text-sm font-medium">{relatedProduct.name}</h3>
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < Math.floor(relatedProduct.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                      />
+                    ))}
+                    <span className="ml-2 text-sm text-gray-500">({relatedProduct.reviews})</span>
+                  </div>
+                  <p className="text-sm text-gray-500">{relatedProduct.price}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
