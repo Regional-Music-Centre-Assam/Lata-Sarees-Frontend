@@ -198,20 +198,20 @@ export function Header() {
           </div>
 
           {/* Account Button */}
-          <Link to="/myorders">
+          <Link to="/profile">
             <Button variant="ghost" size="icon">
               {/* <Search className="h-5 w-5 lg:hidden" /> */}
               <User className="h-5 w-5 " />
               <span className="sr-only">Account</span>
             </Button>
           </Link>
-
+          <Link to="/auth">
           {/* Wishlist Button */}
           <Button variant="ghost" size="icon">
             <Heart className="h-5 w-5" />
             <span className="sr-only">Wishlist</span>
           </Button>
-
+          </Link>
           {/* Cart Button */}
           <Button variant="ghost" size="icon" onClick={toggleCart} className="relative p-2 hover:bg-gray-100">
             <ShoppingCart className="h-5 w-5" />

@@ -13,6 +13,9 @@ import { Checkout } from "./components/Checkout"
 import { PlaceOrder } from "./components/PlaceOrder"
 import { OurCollection } from "./components/OurCollection"
 import { MyOrders } from "./components/MyOrders"
+import { AuthPage } from "./components/AuthPage"
+import { ProfilePage } from "./components/ProfilePage"
+import { EditProfileSection } from "./components/EditProfileSection"
 
 
 function App() {
@@ -36,7 +39,10 @@ function App() {
         <Route path="/checkout" element={<Checkout/>}/>
         <Route path="/placeorder" element={<PlaceOrder/>}/>
         <Route path="/ourcollection" element={<OurCollection/>}/>
-        <Route path="/myorders" element={<MyOrders/>}/>     
+        <Route path="/myorders" element={<MyOrders/>}/> 
+        <Route path="/auth" element={<AuthPage/>}/> 
+        <Route path="/profile" element={<ProfilePage/>}/> 
+        <Route path="/profile/editprofile" element={<EditProfileSection/>}/> 
       </Routes>
       <Footer/>
     </div>
