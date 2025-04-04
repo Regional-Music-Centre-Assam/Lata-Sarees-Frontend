@@ -8,8 +8,16 @@ import { Input } from "./ui/Input";
 import prod_5 from "../assets/ls_logo_1.png";
 import { Login, CreateUser, GetEmailOtp, SetPassword } from "../Api";
 import { toast } from "react-hot-toast";
+import PropTypes from "prop-types";
 
-export function AuthPage() {
+AuthPage.propTypes = {
+  fetchUser: PropTypes.func,
+};
+AuthPage.defaultProps = {
+  fetchUser: () => { },
+};
+
+export function AuthPage({ fetchUser = () => { } }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
@@ -44,6 +52,7 @@ export function AuthPage() {
       
       if (result === 0) {
         toast.success("Login successful!");
+        fetchUser();
         navigate("/");
       }
     } catch (error) {
