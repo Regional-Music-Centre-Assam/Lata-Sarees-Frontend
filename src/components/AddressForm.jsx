@@ -3,7 +3,7 @@ import { Button } from "./ui/Button";
 import { ListCreateRetrieveUpdateRemoveAddress } from "../Api";
 import PropTypes from "prop-types";
 
-export const AddressForm = ({ address = null, onCancel = () => { }, onSubmit = () => { } }) => {
+export const AddressForm = ({ address = null, onCancel = () => { }, onSubmit = (data) => { } }) => {
     const [name, setName] = useState(address ? address.name : '');
     const [phone, setPhone] = useState(address ? address.phone : '');
     const [building, setBuilding] = useState(address ? address.building : '');
@@ -18,8 +18,9 @@ export const AddressForm = ({ address = null, onCancel = () => { }, onSubmit = (
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
+        var data;
         if (address != null)
-            await ListCreateRetrieveUpdateRemoveAddress({
+            data = await ListCreateRetrieveUpdateRemoveAddress({
                 id: address.id,
                 data: {
                     name: name,
@@ -34,7 +35,7 @@ export const AddressForm = ({ address = null, onCancel = () => { }, onSubmit = (
                 }
             });
         else
-            await ListCreateRetrieveUpdateRemoveAddress({
+            data = await ListCreateRetrieveUpdateRemoveAddress({
                 data: {
                     name: name,
                     phone: phone,
@@ -47,7 +48,7 @@ export const AddressForm = ({ address = null, onCancel = () => { }, onSubmit = (
                     pin: pin
                 }
             });
-        onSubmit();
+        onSubmit(data);
         setSubmitting(false);
     }
 
@@ -207,5 +208,5 @@ AddressForm.propTypes = {
 AddressForm.defaultProps = {
     address: null,
     onCancel: () => { },
-    onSubmit: () => { },
+    onSubmit: (data) => { },
 };

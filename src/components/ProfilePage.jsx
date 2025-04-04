@@ -249,7 +249,7 @@ export function ProfilePage({ user, fetchUser }) {
                     editMode == index ? (
                       <div key={address.id} className="border border-[#D2B48C] rounded-lg p-6">
                         <h3 className="font-medium text-[#8B5A2B] mb-4">Edit Address</h3>
-                        <AddressForm address={address} onCancel={() => setEditMode(-2)} onSubmit={() => { setEditMode(-2); fetchAddresses(); }} />
+                        <AddressForm address={address} onCancel={() => setEditMode(-2)} onSubmit={(data) => { setEditMode(-2); fetchAddresses(); setAddresses([...addresses.slice(0, index), data, ...addresses.slice(index + 1)]); }} />
                       </div>
                     ) : (
                       <div
