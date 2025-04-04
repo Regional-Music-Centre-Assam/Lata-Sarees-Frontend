@@ -6,7 +6,7 @@ import { ShoppingBag, MapPin, LogOut, Settings } from "lucide-react";
 import { Button } from "./ui/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import PropTypes from "prop-types";
-import { ListCreateRetrieveOrders, ListCreateRetrieveUpdateRemoveAddress, Logout } from "../Api";
+import { ListCreateRetrieveOrders, ListCreateRetrieveUpdateRemoveAddress, Logout, OrderPayment } from "../Api";
 import { AddressForm } from "./AddressForm";
 
 ProfilePage.propTypes = {
@@ -33,7 +33,7 @@ export function ProfilePage({ user, fetchUser }) {
 
   const fetchOrders = async () => {
     var fetchedOrders = await ListCreateRetrieveOrders({ data: null, id: null });
-    setOrders(fetchedOrders);
+    setOrders(fetchedOrders.results);
   }
 
   const fetchAddresses = async () => {
@@ -135,25 +135,47 @@ export function ProfilePage({ user, fetchUser }) {
                         <div className="bg-[#F5F5DC] px-4 py-3 flex justify-between items-center">
                           <div>
                             <span className="font-medium">Order #{order.id}</span>
-                            <span className="text-sm text-gray-500 ml-4">{order.date}</span>
+                            <span className="text-sm text-gray-500 ml-4">{new Date(order.placed_at).toLocaleString()}</span>
                           </div>
-                          <span className={`text-sm px-3 py-1 rounded-full ${order.status === "Delivered" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>
-                            {order.status}
-                          </span>
+                          <div>
+                            {
+                              order.payment_status != 'C' && <span className={`text-sm px-3 py-1 rounded-full ${order.status === "D" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>
+                                {{
+                                  P: "Payment Pending",
+                                  C: "Paid",
+                                  F: "Payment Failed",
+                                }[order.payment_status]}
+                              </span>
+                            }
+                            <span className={`ms-2 text-sm px-3 py-1 rounded-full ${order.status === "D" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>
+                              {{
+                                P: "Placed",
+                                C: "Confirmed",
+                                S: "Shipped",
+                                T: "In Transit",
+                                D: "Delivered",
+                                X: "Cancelled",
+                                R: "Returned",
+                              }[order.status]}
+                            </span>
+                          </div>
                         </div>
                         <div className="p-4">
                           {order.items.map((item, idx) => (
                             <div key={idx} className="flex py-3 border-b border-[#F5F5DC] last:border-0">
                               <div className="h-16 w-16 bg-gray-100 rounded mr-4 overflow-hidden">
-                                <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                                <img src={item.variant.variants[item.variant.selected_variant].images[0]} alt={`${item.variant.name} (${item.variant.variants[item.variant.selected_variant].name})`} className="h-full w-full object-cover" />
                               </div>
                               <div className="flex-1">
-                                <p className="font-medium">{item.name}</p>
-                                <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                                <p className="font-medium">{`${item.variant.name} (${item.variant.variants[item.variant.selected_variant].name})`}</p>
+                                <span className="text-sm text-gray-700 me-2">₹{item.price.toLocaleString()}</span>
+                                <span className="text-xs text-gray-500 line-through">₹{item.mrp.toLocaleString()}</span>
+                                <p className="text-sm text-gray-700">Qty: {item.quantity}</p>
                               </div>
                               <div className="text-right">
-                                <p className="font-medium">₹{item.price.toLocaleString()}</p>
-                                {order.status === "Delivered" && (
+                                <p className="font-medium">₹{item.total_price.toLocaleString()}</p>
+                                <p className="text-xs text-gray-500 line-through">₹{item.total_mrp.toLocaleString()}</p>
+                                {order.status === "D" && (
                                   <Button variant="link" className="text-[#8B5A2B] p-0 h-auto text-sm">
                                     Buy Again
                                   </Button>
@@ -162,13 +184,22 @@ export function ProfilePage({ user, fetchUser }) {
                             </div>
                           ))}
                         </div>
+                        {(order.tracking_id || order.tracking_url) && <div className="bg-[#F9F9F9] px-4 py-3 flex justify-between items-center">
+                          {order.tracking_url && <span className="font-medium">Tracking URL: {order.tracking_url}</span>}
+                          {order.tracking_id && <span className="font-medium">Tracking ID: {order.tracking_id}</span>}
+                        </div>}
                         <div className="px-4 py-3 bg-[#F9F9F9] flex justify-between items-center">
-                          <Button variant="outline" className="border-[#8B5A2B] text-[#8B5A2B]">
-                            View Details
-                          </Button>
+                          {order.payment_status != 'C'
+                            ? <Button variant="outline" className="border-[#8B5A2B] text-[#8B5A2B]" onClick={() => OrderPayment({ id: order.id })}>
+                              Retry/Check Payment Status
+                            </Button>
+                            : <Button variant="outline" className="border-[#8B5A2B] text-[#8B5A2B]">
+                              Download Invoice
+                            </Button>}
                           <div className="text-right">
                             <p className="text-sm text-gray-500">Total Amount</p>
-                            <p className="font-medium text-lg">₹{order.total.toLocaleString()}</p>
+                            <span className="font-medium text-lg me-2">₹{order.total_price.toLocaleString()}</span>
+                            <span className="text-xs line-through">₹{order.total_mrp.toLocaleString()}</span>
                           </div>
                         </div>
                       </div>
