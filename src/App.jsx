@@ -63,7 +63,7 @@ function App() {
           <Route path="/ourcollection" element={<OurCollection />} />
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="/profile" element={user == null ? <AuthPage fetchUser={fetchUserCallback} /> : <ProfilePage user={user} fetchUser={fetchUserCallback} />} />
-          <Route path="/profile/editprofile" element={<EditProfileSection />} />
+          <Route path="/profile/editprofile" element={user == null ? <AuthPage fetchUser={fetchUserCallback} /> : <EditProfileSection user={user} fetchUser={fetchUserCallback} />} />
         </Routes>
         <Footer />
       </div>

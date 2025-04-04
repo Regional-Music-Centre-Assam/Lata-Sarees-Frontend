@@ -18,6 +18,7 @@ ProfilePage.propTypes = {
       email: PropTypes.string.isRequired,
       first_name: PropTypes.string,
       last_name: PropTypes.string,
+      date_joined: PropTypes.string.isRequired,
     }).isRequired,
     avatar: PropTypes.string,
   }).isRequired,
