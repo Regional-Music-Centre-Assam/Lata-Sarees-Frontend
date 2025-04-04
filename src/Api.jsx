@@ -33,7 +33,7 @@ export const fetchProducts = async () => {
   import { toast } from "react-hot-toast";
   
   var apiUrl = "";
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  if (!import.meta.env.DEV) {
       apiUrl = import.meta.env.VITE_DEV_API_URL || "/api/"
   }
   else {

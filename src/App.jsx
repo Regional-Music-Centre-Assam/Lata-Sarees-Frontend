@@ -1,8 +1,4 @@
 import { Header } from "./components/Header"
-import { HeroSection } from "./components/HeroSection"
-import { FeaturedCategories } from "./components/FeaturedCategories"
-import { ProductGrid } from "./components/ProductGrid"
-import { PromoBar } from "./components/PromoBar"
 import { Routes,Route } from "react-router-dom"
 import { ProductDetailPage } from './components/Product';
 import Home from "./pages/Home"
@@ -16,10 +12,31 @@ import { MyOrders } from "./components/MyOrders"
 import { AuthPage } from "./components/AuthPage"
 import { ProfilePage } from "./components/ProfilePage"
 import { EditProfileSection } from "./components/EditProfileSection"
+import { useCallback, useEffect, useState } from "react"
+import { RetrieveUpdateProfile } from "./Api"
 
 
 function App() {
-  
+  const [user, setUser] = useState(null);
+
+  const fetchUserCallback = useCallback(() => {
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    const fetchedUser = await RetrieveUpdateProfile({ data: null, showToast: false });
+    localStorage.setItem('user', JSON.stringify(fetchedUser));
+    setUser(fetchedUser);
+  }
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return (
     <CartProvider>
 
@@ -39,9 +56,8 @@ function App() {
         <Route path="/checkout" element={<Checkout/>}/>
         <Route path="/placeorder" element={<PlaceOrder/>}/>
         <Route path="/ourcollection" element={<OurCollection/>}/>
-        <Route path="/myorders" element={<MyOrders/>}/> 
-        <Route path="/auth" element={<AuthPage/>}/> 
-        <Route path="/profile" element={<ProfilePage/>}/> 
+        <Route path="/myorders" element={<MyOrders/>}/>
+        <Route path="/profile" element={user == null ? <AuthPage/> : <ProfilePage user={user} fetchUser={fetchUserCallback} />}/> 
         <Route path="/profile/editprofile" element={<EditProfileSection/>}/> 
       </Routes>
       <Footer/>

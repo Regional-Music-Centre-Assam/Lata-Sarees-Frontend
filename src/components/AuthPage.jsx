@@ -37,7 +37,7 @@ export function AuthPage() {
     
     try {
       const loginFormData = new FormData();
-      loginFormData.append('username', formData.email); // Assuming email is used as username
+      loginFormData.append('email', formData.email);
       loginFormData.append('password', formData.password);
       
       const result = await Login({ data: loginFormData });
@@ -258,7 +258,7 @@ export function AuthPage() {
           <div className="text-center text-sm text-gray-600">
             {isLogin ? (
               <>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <button
                   type="button"
                   className="text-[#8B5A2B] hover:underline"
@@ -287,7 +287,7 @@ export function AuthPage() {
             )}
           </div>
 
-          <div className="relative my-6">
+          {/*<div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
@@ -313,7 +313,7 @@ export function AuthPage() {
             >
               Facebook
             </Button>
-          </div>
+          </div>*/}
         </form>
       </div>
     </div>
