@@ -20,8 +20,6 @@ ProfilePage.propTypes = {
       last_name: PropTypes.string,
     }).isRequired,
     avatar: PropTypes.string,
-    displayName: PropTypes.string,
-    bio: PropTypes.string,
   }).isRequired,
   fetchUser: PropTypes.func.isRequired,
 };
@@ -62,7 +60,7 @@ export function ProfilePage({ user, fetchUser }) {
             </Avatar>
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-[#3E2723]">{user.displayName}</h1>
+            <h1 className="text-2xl font-bold text-[#3E2723]">{`${user.user.first_name} ${user.user.last_name}`}</h1>
             <p className="text-gray-600 mb-2">{user.user.email}</p>
             <p className="text-gray-600">{user.user.username}</p>
           </div>
