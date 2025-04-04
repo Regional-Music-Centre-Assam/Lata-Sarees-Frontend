@@ -1,5 +1,5 @@
 import { Header } from "./components/Header"
-import { Routes,Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import { ProductDetailPage } from './components/Product';
 import Home from "./pages/Home"
 import Footer from "./components/ui/Footer"
@@ -14,6 +14,7 @@ import { ProfilePage } from "./components/ProfilePage"
 import { EditProfileSection } from "./components/EditProfileSection"
 import { useCallback, useEffect, useState } from "react"
 import { RetrieveUpdateProfile } from "./Api"
+import { Toaster } from "react-hot-toast";
 
 
 function App() {
@@ -40,28 +41,32 @@ function App() {
   return (
     <CartProvider>
 
-   
-    <div >
-      {/*
+
+      <div >
+        {/*
       <main>
         <HeroSection />
         <FeaturedCategories />
         <ProductGrid />
       </main> */}
-       <Header />
-      <CartSidebar/>
-      <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/product/:id" element={<ProductDetailPage />} />
-        <Route path="/checkout" element={<Checkout/>}/>
-        <Route path="/placeorder" element={<PlaceOrder/>}/>
-        <Route path="/ourcollection" element={<OurCollection/>}/>
-        <Route path="/myorders" element={<MyOrders/>}/>
-        <Route path="/profile" element={user == null ? <AuthPage fetchUser={fetchUserCallback} /> : <ProfilePage user={user} fetchUser={fetchUserCallback} />}/> 
-        <Route path="/profile/editprofile" element={<EditProfileSection/>}/> 
-      </Routes>
-      <Footer/>
-    </div>
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+        />
+        <Header />
+        <CartSidebar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/placeorder" element={<PlaceOrder />} />
+          <Route path="/ourcollection" element={<OurCollection />} />
+          <Route path="/myorders" element={<MyOrders />} />
+          <Route path="/profile" element={user == null ? <AuthPage fetchUser={fetchUserCallback} /> : <ProfilePage user={user} fetchUser={fetchUserCallback} />} />
+          <Route path="/profile/editprofile" element={<EditProfileSection />} />
+        </Routes>
+        <Footer />
+      </div>
     </CartProvider>
   )
 }
