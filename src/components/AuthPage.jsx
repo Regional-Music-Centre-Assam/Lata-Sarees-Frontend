@@ -90,13 +90,6 @@ export function AuthPage({ fetchUser = () => { } }) {
         const createResult = await CreateUser({ data: userFormData });
         
         if (createResult === 0) {
-          // Set password
-          const passwordFormData = new FormData();
-          passwordFormData.append('email', formData.email);
-          passwordFormData.append('password', formData.password);
-          
-          await SetPassword({ data: passwordFormData });
-          
           toast.success("Registration successful! Please login.");
           setIsLogin(true);
           setShowOtpField(false);
