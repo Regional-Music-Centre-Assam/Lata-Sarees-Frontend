@@ -207,10 +207,10 @@ export function Header() {
           </Link>
           <Link to="/auth">
           {/* Wishlist Button */}
-          <Button variant="ghost" size="icon">
+          {/* <Button variant="ghost" size="icon">
             <Heart className="h-5 w-5" />
             <span className="sr-only">Wishlist</span>
-          </Button>
+          </Button> */}
           </Link>
           {/* Cart Button */}
           <Button variant="ghost" size="icon" onClick={toggleCart} className="relative p-2 hover:bg-gray-100">
