@@ -83,8 +83,9 @@ export function AuthPage({ fetchUser = () => { } }) {
         userFormData.append('phone', formData.phone);
         userFormData.append('first_name', formData.first_name);
         userFormData.append('last_name', formData.last_name);
+        userFormData.append('password', formData.password);
         userFormData.append('emailotp', formData.emailotp);
-        
+
         // Create user
         const createResult = await CreateUser({ data: userFormData });
         
