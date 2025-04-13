@@ -119,7 +119,7 @@ export function AuthPage({ fetchUser = () => { } }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
+    <div className="min-h-screen  flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Header with logo */}
         <div className="bg-[#8B5A2B] p-6 text-center">

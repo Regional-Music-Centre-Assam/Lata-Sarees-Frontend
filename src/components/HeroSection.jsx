@@ -14,7 +14,8 @@ import { Link } from "react-router-dom";
 const slides = [
   {
     image: {
-      small: banner_1_large,
+      small: "https://i.pinimg.com/736x/83/55/1e/83551e41de639b212710ead7f2a0a875.jpg",
+
       large: banner_1_sm,
     },
     title: "Endless Love Sale",
@@ -23,7 +24,8 @@ const slides = [
   },
   {
     image: {
-      small: banner_2_large,
+      small: "https://i.pinimg.com/736x/1c/58/b8/1c58b893b3fe7f162e4366d0bb291579.jpg",
+
       large: banner_2_sm,
     },
     title: "Luxury Fabrics",
@@ -32,7 +34,8 @@ const slides = [
   },
   {
     image: {
-      small: banner_3_large,
+      small: "https://i.pinimg.com/736x/61/86/70/618670019ed31e408221bd2cef13bea7.jpg",
+
       large: banner_3_sm,
     },
     title: "New Arrivals",
