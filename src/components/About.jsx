@@ -86,7 +86,7 @@ export function ModernAboutSection() {
       className="relative pt-4 pb-28 lg:py-28 overflow-hidden bg-white"
     >
        <div className="container mx-auto px-4 mb-8">
-        <h2 className="font-medium mb-2 bg-clip-text text-6xl text-transparent bg-gradient-to-r from-red-300 to-fuchsia-500">Our Story</h2>
+        <h2 className="font-medium mb-2 bg-clip-text text-6xl text-transparent bg-gradient-to-r from-red-400 to-fuchsia-500">Our Story</h2>
         <p className="text-gray-500">Crafted with Heart, Backed by Trust</p>
         
         
