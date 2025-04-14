@@ -1,216 +1,239 @@
-import { useCart } from '../context/UseCart'; // Import the cart context
-import { Link, useNavigate } from 'react-router-dom'; // For navigation
+import { useState } from 'react';
+import { useCart } from '../context/UseCart';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Edit, ChevronDown, ChevronUp } from 'lucide-react';
 
 export function Checkout() {
-  const { cart } = useCart(); // Access cart data
-  const navigate = useNavigate(); // For programmatic navigation
+  const { cart, getTotalPrice, clearCart } = useCart();
+  const navigate = useNavigate();
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [addresses, setAddresses] = useState([
+    {
+      id: 1,
+      name: "Home",
+      street: "123 Main St",
+      city: "Mumbai",
+      state: "Maharashtra",
+      pin: "400001",
+      phone: "9876543210"
+    },
+    {
+      id: 2,
+      name: "Work",
+      street: "456 Business Park",
+      city: "Bangalore",
+      state: "Karnataka",
+      pin: "560001",
+      phone: "9876543211"
+    }
+  ]);
 
-  // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Redirect to the Place Order Page
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedAddress) return;
+    clearCart();
     navigate('/placeorder');
   };
 
+  const handleAddAddress = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const newAddress = {
+      id: addresses.length + 1,
+      name: form.addressName.value,
+      street: form.street.value,
+      city: form.city.value,
+      state: form.state.value,
+      pin: form.pin.value,
+      phone: form.phone.value
+    };
+    setAddresses([...addresses, newAddress]);
+    setSelectedAddress(newAddress.id);
+    setShowAddressForm(false);
+    form.reset();
+  };
+
   return (
-    <div className="bg-white py-12 px-4 sm:px-[5vh] md:px-[7vh] lg:px-[9vh]">
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Address Details Form */}
-          <div className="bg-gray-50 p-6 rounded-lg lg:mx-20 ">
-            <h2 className="text-xl font-bold mb-6">Shipping Address</h2>
-            <form onSubmit={handleSubmit} className="space-y-4 grid grid-cols-2 md:grid-cols-2 space-x-4">
-              {/* Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="John Doe"
-                  required
-                />
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="+91 9876543210"
-                  required
-                />
-              </div>
-
-              {/* Building */}
-              <div>
-                <label htmlFor="building" className="block text-sm font-medium text-gray-700">
-                  Building/Apartment
-                </label>
-                <input
-                  type="text"
-                  id="building"
-                  name="building"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Building No. 123"
-                  required
-                />
-              </div>
-
-              {/* Street */}
-              <div>
-                <label htmlFor="street" className="block text-sm font-medium text-gray-700">
-                  Street
-                </label>
-                <input
-                  type="text"
-                  id="street"
-                  name="street"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Main Street"
-                  required
-                />
-              </div>
-
-              {/* Locality */}
-              <div>
-                <label htmlFor="locality" className="block text-sm font-medium text-gray-700">
-                  Locality
-                </label>
-                <input
-                  type="text"
-                  id="locality"
-                  name="locality"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Locality Name"
-                  required
-                />
-              </div>
-
-              {/* Landmark */}
-              <div>
-                <label htmlFor="landmark" className="block text-sm font-medium text-gray-700">
-                  Landmark
-                </label>
-                <input
-                  type="text"
-                  id="landmark"
-                  name="landmark"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Near Central Park"
-                />
-              </div>
-
-              {/* City */}
-              <div>
-                <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                  City
-                </label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="City Name"
-                  required
-                />
-              </div>
-
-              {/* State */}
-              <div>
-                <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                  State
-                </label>
-                <input
-                  type="text"
-                  id="state"
-                  name="state"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="State Name"
-                  required
-                />
-              </div>
-
-              {/* Pin Code */}
-              <div>
-                <label htmlFor="pin" className="block text-sm font-medium text-gray-700">
-                  Pin Code
-                </label>
-                <input
-                  type="text"
-                  id="pin"
-                  name="pin"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="123456"
-                  required
-                />
-              </div>
-
-              {/* Country */}
-              <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                  Country
-                </label>
-                <input
-                  type="text"
-                  id="country"
-                  name="country"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Country Name"
-                  required
-                />
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors col-span-2"
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">Checkout</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Address Section - Compact */}
+        <div className="md:col-span-2 space-y-4">
+          <div className="bg-white p-4 rounded-lg border">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="font-medium">Select Delivery Address</h2>
+              <button 
+                onClick={() => setShowAddressForm(!showAddressForm)}
+                className="text-sm flex items-center text-blue-600"
               >
-                Proceed to Payment
+                {showAddressForm ? (
+                  <>
+                    <ChevronUp className="w-4 h-4 mr-1" /> Hide
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4 mr-1" /> Add New
+                  </>
+                )}
               </button>
-            </form>
-          </div>
+            </div>
 
-          {/* Order Summary */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-bold mb-6">Order Summary</h2>
+            {/* Address Form (Collapsible) */}
+            {showAddressForm && (
+              <form onSubmit={handleAddAddress} className="mb-4 p-4 bg-gray-50 rounded-lg">
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">Address Name</label>
+                    <input
+                      name="addressName"
+                      type="text"
+                      placeholder="Home/Work"
+                      className="w-full p-2 text-sm border rounded"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">Phone</label>
+                    <input
+                      name="phone"
+                      type="tel"
+                      className="w-full p-2 text-sm border rounded"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-sm text-gray-600 mb-1">Street</label>
+                  <input
+                    name="street"
+                    type="text"
+                    className="w-full p-2 text-sm border rounded"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-3 mb-3">
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">City</label>
+                    <input
+                      name="city"
+                      type="text"
+                      className="w-full p-2 text-sm border rounded"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">State</label>
+                    <input
+                      name="state"
+                      type="text"
+                      className="w-full p-2 text-sm border rounded"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">PIN Code</label>
+                    <input
+                      name="pin"
+                      type="text"
+                      className="w-full p-2 text-sm border rounded"
+                      required
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 text-white py-2 text-sm rounded"
+                >
+                  Save Address
+                </button>
+              </form>
+            )}
+
+            {/* Address List */}
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {addresses.map(address => (
+                <div 
+                  key={address.id}
+                  onClick={() => setSelectedAddress(address.id)}
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                    selectedAddress === address.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex justify-between">
+                    <span className="font-medium">{address.name}</span>
+                    <button 
+                      className="text-gray-500 hover:text-blue-600"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Implement edit functionality here
+                      }}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <p className="text-sm mt-1">{address.street}</p>
+                  <p className="text-sm">{`${address.city}, ${address.state} - ${address.pin}`}</p>
+                  <p className="text-sm mt-1">Phone: {address.phone}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+       {/* Order Summary */}
+       <div className="bg-white p-6 rounded-lg shadow-sm">
+            <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Summary</h2>
+            
             {cart.length === 0 ? (
-              <p className="text-gray-500">Your cart is empty.</p>
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-4">Your cart is empty</p>
+                <Link
+                  to="/products"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
             ) : (
               <>
-                {cart.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between py-4 border-b">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                      <div>
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-gray-500">{item.price}</p>
+                <div className="divide-y divide-gray-200">
+                  {cart.map((item) => (
+                    <div key={item.id} className="py-4 flex justify-between">
+                      <div className="flex items-center">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-16 h-16 object-cover rounded-md"
+                        />
+                        <div className="ml-4">
+                          <h3 className="text-sm font-medium text-gray-900">{item.name}</h3>
+                          <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                        </div>
                       </div>
+                      <p className="text-sm font-medium text-gray-900">{item.price}</p>
                     </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 border-t border-gray-200 pt-6">
+                  <div className="flex justify-between text-base font-medium text-gray-900">
+                    <p>Subtotal</p>
+                    <p>${getTotalPrice().toFixed(2)}</p>
                   </div>
-                ))}
+                  <div className="flex justify-between text-sm text-gray-500 mt-1">
+                    <p>Shipping</p>
+                    <p>Calculated at next step</p>
+                  </div>
+                  <div className="flex justify-between text-lg font-medium text-gray-900 mt-4">
+                    <p>Total</p>
+                    <p>${getTotalPrice().toFixed(2)}</p>
+                  </div>
+                </div>
               </>
             )}
           </div>
-        </div>
-        <div className="mt-8 text-center">
-          <Link to="/" className="text-blue-600 hover:text-blue-700">
-            Continue Shopping
-          </Link>
-        </div>
       </div>
     </div>
   );
