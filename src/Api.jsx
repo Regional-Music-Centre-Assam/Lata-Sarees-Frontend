@@ -1,18 +1,32 @@
 
+// export const fetchProducts = async () => {
+//     try {
+//         const response = await fetch('/products.json');
+//         if (!response.ok) {
+//             throw new Error('Failed to fetch products');
+//         }
+//         const data = await response.json();
+//         return data;
+//     } catch (error) {
+//         console.error('Error fetching products:', error);
+//         return [];
+//     }
+// };
 export const fetchProducts = async () => {
     try {
-        const response = await fetch('/products.json');
-        if (!response.ok) {
-            throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        return data;
+      const response = await fetch('https://lata-sarees-backend.vercel.app/api/shop/products/');
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      // If the data is paginated and includes a results array, return that.
+      return data.results || [];
     } catch (error) {
-        console.error('Error fetching products:', error);
-        return [];
+      console.error('Error fetching products:', error);
+      return [];
     }
-};
-
+  };
+  
 
 export const fetchProductById = async (id) => {
     try {

@@ -7,11 +7,11 @@ export function PlaceOrder() {
   const { cart } = useCart(); // Access cart data
   const [paymentMethod, setPaymentMethod] = useState('razorpay'); // State for selected payment method
 
-  // Calculate the total price of items in the cart
   const subtotal = cart.reduce((total, item) => {
-    const price = parseFloat(item.price.replace(/[^0-9.-]+/g, '')); // Extract numeric price
-    return total + price;
+    const unitPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
+    return total + unitPrice * item.quantity;
   }, 0);
+  
 
   // Delivery charges logic
   const deliveryCharge = subtotal > 500 ? 0 : 50; // Free delivery if subtotal > ₹500, else ₹50

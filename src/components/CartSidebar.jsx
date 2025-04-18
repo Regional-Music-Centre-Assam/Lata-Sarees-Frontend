@@ -75,11 +75,17 @@ export function CartSidebar() {
               {cart.map((item) => (
                 <div key={`${item.id}-${item.size}`} className="flex items-start justify-between py-4 border-b">
                   <div className="flex items-start gap-4">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded-lg"
-                    />
+                  <img
+                        src={
+                          item.variants &&
+                          item.variants[item.selected_variant] &&
+                          item.variants[item.selected_variant].images[0]
+                            ? item.variants[item.selected_variant].images[0]
+                            : "/placeholder.svg"
+                        }
+                        alt={item.name}
+                        className="w-16 h-16 object-cover rounded-md"
+                      />
                     <div className="flex-1">
                       <p className="font-medium">{item.name}</p>
                       {item.size && <p className="text-sm text-gray-500">Size: {item.size}</p>}
