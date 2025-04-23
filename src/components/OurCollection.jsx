@@ -125,55 +125,30 @@
 // }
 import { useState, useEffect } from 'react';
 import { Heart, Star } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { fetchProducts } from '../Api';
+import { Link, useSearchParams } from 'react-router-dom';
+import { getParamsFromUrl, ListRetrieveProducts } from '../Api';
 
 export function OurCollection() {
-  const [products, setProducts] = useState([]); // All products
-  const [filteredProducts, setFilteredProducts] = useState([]); // Filtered products
-  const [searchQuery, setSearchQuery] = useState(''); // Search query state
-  const [selectedCategory, setSelectedCategory] = useState('all'); // Category filter state
-  const [loading, setLoading] = useState(true); // Loading state
+  const [products, setProducts] = useState([]);
+  const [previous, setPrevious] = useState(null);
+  const [next, setNext] = useState(null);
+  const [productsQuery, setProductsQuery] = useSearchParams();
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState([]);
 
-  // Fetch products on mount
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const data = await fetchProducts();
-        setProducts(data);
-        setFilteredProducts(data); // Initialize filtered products with all products
-      } catch (error) {
-        console.error('Error loading products:', error);
-      } finally {
-        setLoading(false);
+    const fetchProducts = async () => {
+      const response = await ListRetrieveProducts({ data: null, id: null, params: productsQuery });
+      if (response) {
+        setProducts(response.results ?? []);
+        setNext(response.next);
+        setPrevious(response.previous);
+        setFilters(response.filters);
       }
+      setLoading(false);
     };
-    loadProducts();
-  }, []);
-
-  // Handle search and filter
-  useEffect(() => {
-    let filtered = products;
-
-    // Filter by search query
-    if (searchQuery) {
-      filtered = filtered.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Filter by category using the first category of each product (if needed)
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(
-        (product) => product.categories && product.categories.includes(selectedCategory)
-      );
-    }
-
-    setFilteredProducts(filtered);
-  }, [searchQuery, selectedCategory, products]);
-
-  // Generate unique categories from the products
-  const categories = ['all', ...new Set(products.flatMap(product => product.categories || []))];
+    fetchProducts();
+  }, [productsQuery]);
 
   if (loading) {
     return <div className="text-center py-12">Loading products...</div>;
@@ -187,35 +162,82 @@ export function OurCollection() {
           <input
             type="text"
             placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={productsQuery.get('search') || ''}
+            onChange={(e) => setProductsQuery(prev => {
+              const newParams = new URLSearchParams(prev);
+              newParams.set("search", e.target.value);
+              return newParams;
+            })}
             className="w-full sm:w-64 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
           />
           <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            value={productsQuery.get('product__categories__name') || ''}
+            onChange={(e) => setProductsQuery(prev => {
+              const newParams = new URLSearchParams(prev);
+              newParams.set("product__categories__name", e.target.value);
+              return newParams;
+            })}
             className="w-full sm:w-48 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
           >
-            {categories.map((category) => (
+            <option value=''>
+              All Categories
+            </option>
+            {filters.product__categories__name.map((category) => (
               <option key={category} value={category}>
-                {category === 'all' ? 'All Categories' : category}
+                {category}
+              </option>
+            ))}
+          </select>
+          <select
+            value={productsQuery.get('color_name') || ''}
+            onChange={(e) => setProductsQuery(prev => {
+              const newParams = new URLSearchParams(prev);
+              newParams.set("color_name", e.target.value);
+              return newParams;
+            })}
+            className="w-full sm:w-48 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            <option value=''>
+              Any Color
+            </option>
+            {filters.color_name.map((color) => (
+              <option key={color.color_name} value={color.color_name}>
+                {color.color_name} {color.color}
+              </option>
+            ))}
+          </select>
+          <select
+            value={productsQuery.get('size') || ''}
+            onChange={(e) => setProductsQuery(prev => {
+              const newParams = new URLSearchParams(prev);
+              newParams.set("size", e.target.value);
+              return newParams;
+            })}
+            className="w-full sm:w-48 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            <option value=''>
+              All Sizes
+            </option>
+            {filters.size.map((size) => (
+              size != '' && <option key={size} value={size}>
+                {size}
               </option>
             ))}
           </select>
         </div>
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filteredProducts.map((product) => {
+          {products.map((product) => {
             // Get the selected variant details
             const variant =
               product.variants &&
-              product.variants[product.selected_variant] ? product.variants[product.selected_variant] : null;
+                product.variants[product.selected_variant] ? product.variants[product.selected_variant] : null;
             // If you don't have rating info from the API, set a default value.
             const rating = product.rating || 0;
             const reviews = product.reviews || 0;
-            
+
             return (
-              <div key={product.id} className="group relative">
-                <Link to={`/product/${product.id}`} className="relative block aspect-square">
+              <div key={variant.id} className="group relative">
+                <Link to={`/product/${variant.id}`} className="relative block aspect-square">
                   <img
                     src={
                       variant && variant.images && variant.images[0]
@@ -244,9 +266,9 @@ export function OurCollection() {
                   <p className="text-sm text-gray-500">
                     $
                     {variant &&
-                    variant.pricing &&
-                    variant.pricing[0] &&
-                    variant.pricing[0].price
+                      variant.pricing &&
+                      variant.pricing[0] &&
+                      variant.pricing[0].price
                       ? variant.pricing[0].price
                       : 'N/A'}
                   </p>
@@ -255,7 +277,20 @@ export function OurCollection() {
             );
           })}
         </div>
-        {filteredProducts.length === 0 && (
+        {/* Pagination Buttons */}
+        <div className='flex justify-between mt-6'>
+          {previous && (
+            <button className='bg-black text-white px-6 py-2 rounded-lg' onClick={() => setProductsQuery(getParamsFromUrl(previous))}>
+              Previous
+            </button>
+          )}
+          {next && (
+            <button className='bg-black text-white px-6 py-2 rounded-lg' onClick={() => setProductsQuery(getParamsFromUrl(next))}>
+              Next
+            </button>
+          )}
+        </div>
+        {products.length === 0 && (
           <div className="text-center py-12">No products found.</div>
         )}
       </div>

@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom"
 import { ProductDetailPage } from './components/Product';
 import Home from "./pages/Home"
 import Footer from "./components/ui/Footer"
-import { CartProvider } from "./context/UseCart"
 import { CartSidebar } from "./components/CartSidebar"
 import { Checkout } from "./components/Checkout"
 import { PlaceOrder } from "./components/PlaceOrder"
@@ -13,18 +12,17 @@ import { AuthPage } from "./components/AuthPage"
 import { ProfilePage } from "./components/ProfilePage"
 import { EditProfileSection } from "./components/EditProfileSection"
 import { useCallback, useEffect, useState } from "react"
-import { RetrieveUpdateProfile } from "./Api"
+import { ListCreateRetrieveUpdateRemoveCart, RetrieveUpdateProfile } from "./Api"
 import { Toaster } from "react-hot-toast";
 
 
 function App() {
   const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const fetchUserCallback = useCallback(() => {
-    fetchUser();
-  }, []);
-
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -32,43 +30,64 @@ function App() {
     const fetchedUser = await RetrieveUpdateProfile({ data: null, showToast: false });
     localStorage.setItem('user', JSON.stringify(fetchedUser));
     setUser(fetchedUser);
-  }
+  }, []);
+
+  const toggleCart = useCallback(() => {
+    setIsCartOpen((prev) => !prev);
+  }, []);
+  
+  const listCart = useCallback(async () => {
+    const cart = await ListCreateRetrieveUpdateRemoveCart({ data: null, id: null, remove: false, showToast: false });
+    setCart(cart ?? []);
+  }, []);
 
   useEffect(() => {
     fetchUser();
-  }, []);
+    listCart();
+  }, [fetchUser, listCart]);
+
+  useEffect(() => {
+    calculateTotalPrice(cart);
+  }, [cart]);
+
+  const calculateTotalPrice = (cart) => {
+    setTotalPrice(cart.reduce((acc, entry) => {
+      const variant = entry.variant.variants[entry.variant.selected_variant]
+
+      var price = 0;
+      if (variant.pricing) {
+        const pricingTier = variant.pricing.find((p) => {
+          if (p.maxQuantity === null) return entry.quantity >= p.minQuantity;
+          return entry.quantity >= p.minQuantity && entry.quantity <= p.maxQuantity;
+        });
+        price = pricingTier ? pricingTier.price : 0;
+      }
+
+      return acc + (price * entry.quantity);
+    }, 0));
+  }
 
   return (
-    <CartProvider>
-
-
-      <div >
-        {/*
-      <main>
-        <HeroSection />
-        <FeaturedCategories />
-        <ProductGrid />
-      </main> */}
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-        />
-        <Header />
-        <CartSidebar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/product/:id" element={<ProductDetailPage />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/placeorder" element={<PlaceOrder />} />
-          <Route path="/ourcollection" element={<OurCollection />} />
-          <Route path="/myorders" element={<MyOrders />} />
-          <Route path="/profile" element={user == null ? <AuthPage fetchUser={fetchUserCallback} /> : <ProfilePage user={user} fetchUser={fetchUserCallback} />} />
-          <Route path="/profile/editprofile" element={user == null ? <AuthPage fetchUser={fetchUserCallback} /> : <EditProfileSection user={user} fetchUser={fetchUserCallback} />} />
-        </Routes>
-        <Footer />
-      </div>
-    </CartProvider>
-  )
+    <div >
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
+      <Header cart={cart} toggleCart={toggleCart} />
+      <CartSidebar cart={cart} listCart={listCart} toggleCart={toggleCart} isCartOpen={isCartOpen} totalPrice={totalPrice} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/product/:id" element={<ProductDetailPage />} />
+        <Route path="/checkout" element={<Checkout cart={cart} totalPrice={totalPrice} />} />
+        <Route path="/placeorder" element={<PlaceOrder cart={cart} />} />
+        <Route path="/ourcollection" element={<OurCollection />} />
+        <Route path="/myorders" element={<MyOrders />} />
+        <Route path="/profile" element={user == null ? <AuthPage fetchUser={fetchUser} /> : <ProfilePage user={user} fetchUser={fetchUser} />} />
+        <Route path="/profile/editprofile" element={user == null ? <AuthPage fetchUser={fetchUser} /> : <EditProfileSection user={user} fetchUser={fetchUser} />} />
+      </Routes>
+      <Footer />
+    </div>
+  );
 }
 
 export default App

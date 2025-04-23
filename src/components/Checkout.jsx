@@ -1,10 +1,29 @@
 import { useState } from 'react';
-import { useCart } from '../context/UseCart';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Edit, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Edit, ChevronUp } from 'lucide-react';
+import PropTypes from 'prop-types';
 
-export function Checkout() {
-  const { cart, getTotalPrice, clearCart } = useCart();
+Checkout.propTypes = {
+  cart: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      quantity: PropTypes.number.isRequired,
+      variant: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        selected_variant: PropTypes.number,
+        variants: PropTypes.arrayOf(
+          PropTypes.shape({
+            images: PropTypes.arrayOf(PropTypes.string)
+          })
+        )
+      }),
+    })
+  ).isRequired,
+  totalPrice: PropTypes.number.isRequired
+};
+
+export function Checkout({ cart, totalPrice }) {
   const navigate = useNavigate();
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -32,7 +51,6 @@ export function Checkout() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedAddress) return;
-    clearCart();
     navigate('/placeorder');
   };
 
@@ -251,7 +269,7 @@ export function Checkout() {
               <div className="mt-6 border-t border-gray-200 pt-6">
                 <div className="flex justify-between text-base font-medium text-gray-900">
                   <p>Subtotal</p>
-                  <p>${getTotalPrice().toFixed(2)}</p>
+                  <p>${totalPrice.toFixed(2)}</p>
                 </div>
                 <div className="flex justify-between text-sm text-gray-500 mt-1">
                   <p>Shipping</p>
@@ -259,7 +277,7 @@ export function Checkout() {
                 </div>
                 <div className="flex justify-between text-lg font-medium text-gray-900 mt-4">
                   <p>Total</p>
-                  <p>${getTotalPrice().toFixed(2)}</p>
+                  <p>${totalPrice.toFixed(2)}</p>
                 </div>
                 {/* Place Order Button */}
                 <Link to='/placeorder'>

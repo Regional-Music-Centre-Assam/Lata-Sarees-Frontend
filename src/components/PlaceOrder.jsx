@@ -1,10 +1,13 @@
-import { useCart } from '../context/UseCart'; // Import the cart context
 import { Link } from 'react-router-dom'; // For navigation
 import { useState } from 'react'; // For managing selected payment method
-import { CreditCard, Wallet, HandCoins } from 'lucide-react'; // React Lucide icons
+import { HandCoins } from 'lucide-react'; // React Lucide icons
+import PropTypes from 'prop-types';
 
-export function PlaceOrder() {
-  const { cart } = useCart(); // Access cart data
+PlaceOrder.propTypes = {
+  cart: PropTypes.array.isRequired, // Prop type for cart
+};
+
+export function PlaceOrder({ cart }) {
   const [paymentMethod, setPaymentMethod] = useState('razorpay'); // State for selected payment method
 
   const subtotal = cart.reduce((total, item) => {

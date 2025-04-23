@@ -1,8 +1,9 @@
 "use client"
 
 import { Link } from "react-router-dom";
-import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react";
+import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "./ui/Button";
+import PropTypes from 'prop-types';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,12 +14,15 @@ import {
 } from "./ui/NavMenu";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/Sheet";
 import { Input } from "./ui/Input";
-import { useCart } from "../context/UseCart";
 import { useState } from "react";
 import prod_5 from "../assets/ls_logo_1.png";
 
-export function Header() {
-  const { toggleCart, cart } = useCart();
+Header.propTypes = {
+  cart: PropTypes.array.isRequired,
+  toggleCart: PropTypes.func.isRequired,
+};
+
+export function Header({ cart, toggleCart }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const [searchResults, setSearchResults] = useState([]); // State for search results

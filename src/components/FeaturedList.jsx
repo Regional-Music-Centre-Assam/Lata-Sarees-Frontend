@@ -1,12 +1,6 @@
 import { Heart, Star } from "lucide-react";
-import prod_1 from '../assets/bs_1.webp';
-import prod_2 from '../assets/bs_2.webp';
-import prod_3 from '../assets/bs_3.webp';
-import prod_4 from '../assets/bs_4.webp';
 import { Link } from 'react-router-dom'; 
 import { useEffect, useState } from "react";
-import banner_1_large from '../assets/Banner1_lg.jpg';
-import { fetchProductById } from '../Api'; 
 // const products = [
 //   {
 //     id: 1,
