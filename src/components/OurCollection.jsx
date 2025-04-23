@@ -124,7 +124,7 @@
 //   );
 // }
 import { useState, useEffect } from 'react';
-import { Heart, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getParamsFromUrl, ListRetrieveProducts } from '../Api';
 
@@ -258,10 +258,6 @@ export function OurCollection() {
                     alt={product.name}
                     className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                   />
-                  <button className="absolute right-2 top-2 p-2 bg-white rounded-full opacity-0 transition-opacity group-hover:opacity-100">
-                    <Heart className="h-5 w-5" />
-                    <span className="sr-only">Add to wishlist</span>
-                  </button>
                 </Link>
                 <div className="mt-4 space-y-1">
                   <h3 className="text-sm font-medium">{product.name} ({variant.color_name})</h3>
