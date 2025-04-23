@@ -235,6 +235,17 @@ export function OurCollection() {
             const rating = product.rating || 0;
             const reviews = product.reviews || 0;
 
+            var minPrice = 0;
+            var maxPrice = 0;
+            variant.pricing.forEach((entry) => {
+              if (minPrice === 0 || entry.price < minPrice) {
+                minPrice = entry.price;
+              }
+              if (maxPrice === 0 || entry.price > maxPrice) {
+                maxPrice = entry.price;
+              }
+            });
+
             return (
               <div key={variant.id} className="group relative">
                 <Link to={`/product/${variant.id}`} className="relative block aspect-square">
@@ -253,8 +264,8 @@ export function OurCollection() {
                   </button>
                 </Link>
                 <div className="mt-4 space-y-1">
-                  <h3 className="text-sm font-medium">{product.name}</h3>
-                  <div className="flex items-center">
+                  <h3 className="text-sm font-medium">{product.name} ({variant.color_name})</h3>
+                  {(rating > 0 || reviews > 0) && <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
@@ -262,16 +273,12 @@ export function OurCollection() {
                       />
                     ))}
                     <span className="ml-2 text-sm text-gray-500">({reviews})</span>
+                  </div>}
+                  <span className="font-medium">₹{variant.pricing.length > 1 ? minPrice === maxPrice ? minPrice : `${minPrice} - ${maxPrice}` : variant.pricing[0].price}</span>
+                  <div>
+                    <span className="text-xs text-gray-500 line-through">₹{variant.mrp}</span>
+                    {variant.mrp > minPrice && <span className='text-gray-500 ms-2'>{`${variant.pricing.length > 1 ? 'upto ' : ''}${((variant.mrp - minPrice) / variant.mrp * 100).toFixed(0)}% off`}</span>}
                   </div>
-                  <p className="text-sm text-gray-500">
-                    $
-                    {variant &&
-                      variant.pricing &&
-                      variant.pricing[0] &&
-                      variant.pricing[0].price
-                      ? variant.pricing[0].price
-                      : 'N/A'}
-                  </p>
                 </div>
               </div>
             );

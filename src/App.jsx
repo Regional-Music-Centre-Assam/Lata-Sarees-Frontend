@@ -20,7 +20,9 @@ function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [totalMrp, setTotalMrp] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartLoading, setCartLoading] = useState(-1);
 
   const fetchUser = useCallback(async () => {
     const storedUser = localStorage.getItem('user');
@@ -39,6 +41,7 @@ function App() {
   const listCart = useCallback(async () => {
     const cart = await ListCreateRetrieveUpdateRemoveCart({ data: null, id: null, remove: false, showToast: false });
     setCart(cart ?? []);
+    setCartLoading(-2);
   }, []);
 
   useEffect(() => {
@@ -65,6 +68,10 @@ function App() {
 
       return acc + (price * entry.quantity);
     }, 0));
+    setTotalMrp(cart.reduce((acc, entry) => {
+      const variant = entry.variant.variants[entry.variant.selected_variant]
+      return acc + (variant.mrp * entry.quantity);
+    }, 0));
   }
 
   return (
@@ -74,11 +81,11 @@ function App() {
         reverseOrder={false}
       />
       <Header cart={cart} toggleCart={toggleCart} />
-      <CartSidebar cart={cart} listCart={listCart} toggleCart={toggleCart} isCartOpen={isCartOpen} totalPrice={totalPrice} />
+      <CartSidebar cart={cart} listCart={listCart} toggleCart={toggleCart} isCartOpen={isCartOpen} totalPrice={totalPrice} totalMrp={totalMrp} loading={cartLoading} setLoading={setCartLoading} />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetailPage />} />
-        <Route path="/checkout" element={<Checkout cart={cart} totalPrice={totalPrice} />} />
+        <Route path="/product/:id" element={<ProductDetailPage listCart={listCart} />} />
+        <Route path="/checkout" element={<Checkout cart={cart} totalPrice={totalPrice} totalMrp={totalMrp} />} />
         <Route path="/placeorder" element={<PlaceOrder cart={cart} />} />
         <Route path="/ourcollection" element={<OurCollection />} />
         <Route path="/myorders" element={<MyOrders />} />

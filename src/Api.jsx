@@ -295,7 +295,6 @@ export const ListCreateRetrieveUpdateRemoveCart = async ({ data = null, id = nul
             response = await axios.post(cartUrl, data, {
                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
             });
-            toast.success('Added to cart');
         }
         else if (id !== null && data === null && !remove) { // Retrieve
             response = await axios.get(`${cartUrl}${id}/`, {
@@ -306,7 +305,6 @@ export const ListCreateRetrieveUpdateRemoveCart = async ({ data = null, id = nul
             response = await axios.put(`${cartUrl}${id}/`, data, {
                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
             });
-            toast.success('Cart quantity updated');
         }
         else if (id !== null && remove) { // Remove
             response = await axios.delete(`${cartUrl}${id}/`, {

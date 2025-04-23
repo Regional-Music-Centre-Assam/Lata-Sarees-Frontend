@@ -10,9 +10,15 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { ListRetrieveProducts, ListCreateRetrieveUpdateRemoveCart } from "../Api";
+import PropTypes from 'prop-types';
 
-export function ProductDetailPage() {
+ProductDetailPage.propTypes = {
+  listCart: PropTypes.func.isRequired,
+};
+
+export function ProductDetailPage({ listCart }) {
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -33,6 +39,7 @@ export function ProductDetailPage() {
       setProduct(await ListRetrieveProducts({
         id: id,
       }));
+      setLoading(false);
     }
 
     loadProduct();
@@ -98,13 +105,18 @@ export function ProductDetailPage() {
     }
   };
 
-  const handleAddToCart = () => {
-    ListCreateRetrieveUpdateRemoveCart({
+  const handleAddToCart = async () => {
+    setLoading(true);
+    if (await ListCreateRetrieveUpdateRemoveCart({
       data: {
         variant: variant.id,
         quantity: quantity,
-      }
-    })
+      },
+    })) {
+      setQuantity(1);
+      await listCart();
+    }
+    setLoading(false);
   };
 
   // Get unique sizes and colors from the available variants
@@ -136,7 +148,7 @@ export function ProductDetailPage() {
           {/* Product Information */}
           <div className="space-y-6">
             <h1 className="text-3xl font-bold">{product.name}</h1>
-            <div className="flex items-center">
+            {product.rating > 0 || product.reviews > 0 && <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
@@ -150,7 +162,7 @@ export function ProductDetailPage() {
               <span className="ml-2 text-sm text-gray-500">
                 ({product.reviews || 0} reviews)
               </span>
-            </div>
+            </div>}
 
             {/* Variant Selector UI */}
             {product.variants.length > 1 && (
@@ -162,6 +174,7 @@ export function ProductDetailPage() {
                       <button
                         key={color}
                         onClick={() => setSelectedColor(color)}
+                        disabled={loading}
                         className={`px-4 py-2 border rounded ${
                           selectedColor === color ? "border-blue-600" : "border-gray-300"
                         }`}
@@ -178,6 +191,7 @@ export function ProductDetailPage() {
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
+                        disabled={loading}
                         className={`px-4 py-2 border rounded ${
                           selectedSize === size ? "border-blue-600" : "border-gray-300"
                         }`}
@@ -201,6 +215,7 @@ export function ProductDetailPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
+                  disabled={loading}
                   className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   -
@@ -211,11 +226,13 @@ export function ProductDetailPage() {
                   name="quantity"
                   value={quantity}
                   onChange={handleQuantityChange}
+                  disabled={loading}
                   min="1"
                   className="mt-1 block w-20 p-2 border border-gray-300 rounded-md text-center"
                 />
                 <button
                   onClick={() => setQuantity((prev) => prev + 1)}
+                  disabled={loading}
                   className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   +
@@ -225,18 +242,30 @@ export function ProductDetailPage() {
 
             {/* Price Display */}
             <p className="text-2xl font-semibold">
-              {isFabric ? (
-                <>
-                  Total Price: ₹{totalPrice}{" "}
-                  <span className="text-sm text-gray-500">(₹{price} per meter)</span>
-                </>
-              ) : (
-                <>
-                  Total Price: ₹{totalPrice}{" "}
-                  <span className="text-sm text-gray-500">(₹{price} per piece)</span>
-                </>
-              )}
+              <div>
+                <span>Total Price: ₹{totalPrice}</span>
+                <span className="text-sm text-gray-500 line-through ms-2">₹{quantity*variant.mrp}</span>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">₹{price}</span>
+                <span className="text-sm text-gray-500 line-through ms-2">₹{variant.mrp}</span>
+                <span className="text-sm text-gray-500 ms-2">{isFabric ? 'per meter' : 'per piece'}</span>
+                <span className="text-sm text-gray-500 ms-2">{(() => {
+                  const discount = Math.round(((variant.mrp - price) / variant.mrp) * 100);
+                  return discount > 0 ? `(${discount}% off)` : '';
+                })()}</span>
+              </div>
             </p>
+
+            {/* Add to Cart Button */}
+            <button
+              onClick={handleAddToCart}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              <span>{loading ? 'Adding...' : 'Add to Cart'}</span>
+            </button>
 
             {/* Quality Section */}
             <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
@@ -286,15 +315,6 @@ export function ProductDetailPage() {
                 <p className="text-sm text-gray-500">Standard shipping available</p>
               </div>
             </div>
-
-            {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span>Add to Cart</span>
-            </button>
           </div>
         </div>
 
