@@ -210,8 +210,8 @@ export function Header({ cart, toggleCart }) {
             </Button>
           </Link>
           <Link to="/auth">
-          {/* Wishlist Button */}
-          {/* <Button variant="ghost" size="icon">
+            {/* Wishlist Button */}
+            {/* <Button variant="ghost" size="icon">
             <Heart className="h-5 w-5" />
             <span className="sr-only">Wishlist</span>
           </Button> */}
@@ -221,7 +221,13 @@ export function Header({ cart, toggleCart }) {
             <ShoppingCart className="h-5 w-5" />
             {cart.length > 0 && (
               <span className="absolute top-0 right-0 bg-pink-500 text-white text-xs rounded-full px-1.5 py-0.5">
-                {cart.length}
+                {(() => {
+                  var count = 0;
+                  cart.forEach((entry) => {
+                    count += entry.quantity;
+                  });
+                  return count;
+                })()}
               </span>
             )}
           </Button>

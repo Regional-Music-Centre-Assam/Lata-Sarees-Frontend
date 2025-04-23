@@ -52,7 +52,13 @@ export function CartSidebar({ cart, toggleCart, listCart, isCartOpen, totalPrice
           }`}
       >
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-bold">Shopping Cart ({cart.length})</h2>
+          <h2 className="text-xl font-bold">Shopping Cart ({(() => {
+            var count = 0;
+            cart.forEach((entry) => {
+              count += entry.quantity;
+            });
+            return count;
+          })()})</h2>
           <button onClick={toggleCart} className="p-2 hover:bg-gray-100 rounded-full">
             <X className="h-6 w-6" />
           </button>
