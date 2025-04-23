@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-  Heart,
   Star,
   ShoppingCart,
   Truck,
@@ -49,8 +48,8 @@ export function ProductDetailPage({ listCart }) {
     if (product) {
       setRelatedProducts(product.related_products || []);
       setSelectedVariant(product.selected_variant || 0);
-      setSelectedSize(product.variants[product.selected_variant]?.size || null);
-      setSelectedColor(product.variants[product.selected_variant]?.color_name || null);
+      setSelectedSize(product.variants[product.selected_variant].size);
+      setSelectedColor(product.variants[product.selected_variant].color_name);
     }
   }, [product])
 
@@ -139,15 +138,11 @@ export function ProductDetailPage({ listCart }) {
               alt={product.name}
               className="object-cover w-full h-full rounded-lg"
             />
-            <button className="absolute right-2 top-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors">
-              <Heart className="h-5 w-5" />
-              <span className="sr-only">Add to wishlist</span>
-            </button>
           </div>
 
           {/* Product Information */}
           <div className="space-y-6">
-            <h1 className="text-3xl font-bold">{product.name}</h1>
+            <h1 className="text-3xl font-bold">{product.name} ({variant.name})</h1>
             {product.rating > 0 || product.reviews > 0 && <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <Star
@@ -167,7 +162,7 @@ export function ProductDetailPage({ listCart }) {
             {/* Variant Selector UI */}
             {product.variants.length > 1 && (
               <div className="mt-4">
-                <div>
+                {availableColors.length > 1 && <div>
                   <h3 className="text-sm font-medium text-gray-900">Select Color</h3>
                   <div className="flex space-x-2 mt-2">
                     {availableColors.map((color) => (
@@ -178,13 +173,16 @@ export function ProductDetailPage({ listCart }) {
                         className={`px-4 py-2 border rounded ${
                           selectedColor === color ? "border-blue-600" : "border-gray-300"
                         }`}
+                        style={{
+                          backgroundColor: product.variants.find((v) => v.color_name === color)?.color || "#fff",
+                        }}
                       >
                         {color}
                       </button>
                     ))}
                   </div>
-                </div>
-                <div className="mt-4">
+                </div>}
+                {availableSizes.length > 1 && <div className="mt-4">
                   <h3 className="text-sm font-medium text-gray-900">Select Size</h3>
                   <div className="flex space-x-2 mt-2">
                     {availableSizes.map((size) => (
@@ -200,7 +198,7 @@ export function ProductDetailPage({ listCart }) {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div>}
               </div>
             )}
 
@@ -319,7 +317,7 @@ export function ProductDetailPage({ listCart }) {
         </div>
 
         {/* Related Products Section */}
-        <div className="mt-12">
+        {relatedProducts.length > 0 && <div className="mt-12">
           <h2 className="text-2xl font-bold mb-6">Related Products</h2>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {relatedProducts.map((relatedProduct) => {
@@ -350,10 +348,6 @@ export function ProductDetailPage({ listCart }) {
                       alt={relatedProduct.name}
                       className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                     />
-                    <button className="absolute right-2 top-2 p-2 bg-white rounded-full opacity-0 transition-opacity group-hover:opacity-100">
-                      <Heart className="h-5 w-5" />
-                      <span className="sr-only">Add to wishlist</span>
-                    </button>
                   </Link>
                   <div className="mt-4 space-y-1">
                     <h3 className="text-sm font-medium">{relatedProduct.name}</h3>
@@ -378,7 +372,7 @@ export function ProductDetailPage({ listCart }) {
               );
             })}
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );
