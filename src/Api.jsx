@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Cookies from 'js-cookie'
 import { toast } from "react-hot-toast";
 
 var apiUrl = "";
@@ -26,8 +25,8 @@ const cartUrl = `${shopUrl}cart/`
 const ordersUrl = `${shopUrl}orders/`
 
 export const Logout = () => {
-    Cookies.remove('token');
-    Cookies.remove('refresh');
+    localStorage.removeItem('token');
+    localStorage.removeItem('refresh');
 }
 
 const handleError = (error, toastify = true) => {
@@ -79,11 +78,11 @@ const showUploadProgress = (progressEvent) => {
 };
 
 const getToken = async () => {
-    var token = Cookies.get('token');
+    var token = localStorage.getItem('token');
 
     if (!token) {
         RefreshToken();
-        token = Cookies.get('token');
+        token = localStorage.getItem('token');
 
         if (!token) {
             throw new Error('Please Login');
@@ -112,8 +111,8 @@ export const Login = async ({ data = null }) => {
         const response = await axios.post(tokenUrl, data, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
-        Cookies.set('token', response.data.access);
-        Cookies.set('refresh', response.data.refresh);
+        localStorage.setItem('token', response.data.access);
+        localStorage.setItem('refresh', response.data.refresh);
         return 0;
     } catch (error) {
         handleError(error);
@@ -123,7 +122,7 @@ export const Login = async ({ data = null }) => {
 
 export const RefreshToken = async () => {
     try {
-        const refresh = Cookies.get('refresh');
+        var refresh = localStorage.getItem('refresh');
 
         if (!refresh) {
             throw new Error('Refresh Token not found');
@@ -132,8 +131,9 @@ export const RefreshToken = async () => {
         const response = await axios.post(refreshTokenUrl, { 'refresh': refresh }, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
-        Cookies.set('token', response.data.access);
-        Cookies.set('refresh', response.data.refresh);
+        
+        localStorage.setItem('token', response.data.access);
+        localStorage.setItem('refresh', response.data.refresh);
         return 0;
     } catch (error) {
         if (error.response && error.response.status === 401)

@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { ShoppingBag, MapPin, LogOut, Settings } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ShoppingBag, MapPin, LogOut, Settings, LoaderCircle } from "lucide-react";
 import { Button } from "./ui/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import PropTypes from "prop-types";
@@ -23,23 +23,37 @@ ProfilePage.propTypes = {
     avatar: PropTypes.string,
   }).isRequired,
   fetchUser: PropTypes.func.isRequired,
+  initActiveTab: PropTypes.string,
 };
 
-export function ProfilePage({ user, fetchUser }) {
-  const [activeTab, setActiveTab] = useState("orders");
+export function ProfilePage({ user, fetchUser, initActiveTab = "orders" }) {
+  const [activeTab, setActiveTab] = useState(initActiveTab);
   const [editMode, setEditMode] = useState(-2);
   const [orders, setOrders] = useState([]);
   const [addresses, setAddresses] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
+    setLoadingOrders(true);
     var fetchedOrders = await ListCreateRetrieveOrders({ data: null, id: null });
-    setOrders(fetchedOrders.results);
+    if (fetchedOrders)
+      setOrders(fetchedOrders.results);
+    setLoadingOrders(false);
   }
 
   const fetchAddresses = async () => {
+    setLoadingAddresses(true);
     var fetchedAddresses = await ListCreateRetrieveUpdateRemoveAddress({ data: null, id: null, remove: false });
-    setAddresses(fetchedAddresses);
+    if (fetchedAddresses)
+      setAddresses(fetchedAddresses);
+    setLoadingAddresses(false);
   }
+
+  useEffect(() => {
+    navigate(`/profile/${activeTab}`);
+  }, [activeTab, navigate]);
 
   useEffect(() => {
     fetchUser();
@@ -139,15 +153,30 @@ export function ProfilePage({ user, fetchUser }) {
                           </div>
                           <div>
                             {
-                              order.payment_status != 'C' && <span className={`text-sm px-3 py-1 rounded-full ${order.status === "D" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>
+                              <span className={`text-sm px-3 py-1 rounded-full ${
+                                  order.payment_status === "C"
+                                    ? "bg-green-100 text-green-800"
+                                    : order.payment_status === "F"
+                                      ? "bg-red-100 text-red-800"
+                                      : order.payment_status === "P"
+                                        ? "bg-yellow-100 text-yellow-800"
+                                        : "bg-blue-100 text-blue-800"
+                                }`}>
                                 {{
+                                  D: "Pay on Delivery",
                                   P: "Payment Pending",
                                   C: "Paid",
                                   F: "Payment Failed",
                                 }[order.payment_status]}
                               </span>
                             }
-                            <span className={`ms-2 text-sm px-3 py-1 rounded-full ${order.status === "D" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>
+                            <span className={`ms-2 text-sm px-3 py-1 rounded-full ${
+                                order.status === "D"
+                                  ? "bg-green-100 text-green-800"
+                                  : order.status === "X" || order.state === "R"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-blue-100 text-blue-800"
+                              }`}>
                               {{
                                 P: "Placed",
                                 C: "Confirmed",
@@ -189,7 +218,7 @@ export function ProfilePage({ user, fetchUser }) {
                           {order.tracking_id && <span className="font-medium">Tracking ID: {order.tracking_id}</span>}
                         </div>}
                         <div className="px-4 py-3 bg-[#F9F9F9] flex justify-between items-center">
-                          {order.payment_status != 'C'
+                          {order.payment_status != 'C' && order.payment_status != 'D'
                             ? <Button variant="outline" className="border-[#8B5A2B] text-[#8B5A2B]" onClick={() => OrderPayment({ id: order.id })}>
                               Retry/Check Payment Status
                             </Button>
@@ -204,6 +233,10 @@ export function ProfilePage({ user, fetchUser }) {
                         </div>
                       </div>
                     ))}
+                  </div>
+                ) : loadingOrders ? (
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <LoaderCircle className="animate-spin h-16 w-16 text-pink-700" />
                   </div>
                 ) : (
                   <div className="text-center py-12">
@@ -262,21 +295,25 @@ export function ProfilePage({ user, fetchUser }) {
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold text-[#3E2723]">My Addresses</h2>
-                  <Button
+                  {!loadingAddresses && <Button
                     className="bg-[#8B5A2B] hover:bg-[#A0522D]"
                     onClick={() => setEditMode(-1)}
                   >
                     Add New Address
-                  </Button>
+                  </Button>}
                 </div>
 
                 <div>
-                  {editMode == -1 && <div className="border border-[#D2B48C] rounded-lg p-6">
+                  {editMode == -1 && !loadingAddresses && <div className="border border-[#D2B48C] rounded-lg p-6">
                     <h3 className="font-medium text-[#8B5A2B] mb-4">Add New Address</h3>
                     <AddressForm onCancel={() => setEditMode(-2)} onSubmit={() => { setEditMode(-2); fetchAddresses(); }} />
                   </div>}
-                  {addresses.map((address, index) => (
-                    editMode == index ? (
+                  {loadingAddresses && addresses.length == 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <LoaderCircle className="animate-spin h-16 w-16 text-pink-700" />
+                    </div>
+                  ) : addresses.map((address, index) => (
+                    editMode == index && !loadingAddresses ? (
                       <div key={address.id} className="border border-[#D2B48C] rounded-lg p-6">
                         <h3 className="font-medium text-[#8B5A2B] mb-4">Edit Address</h3>
                         <AddressForm address={address} onCancel={() => setEditMode(-2)} onSubmit={(data) => { setEditMode(-2); fetchAddresses(); setAddresses([...addresses.slice(0, index), data, ...addresses.slice(index + 1)]); }} />
@@ -292,7 +329,7 @@ export function ProfilePage({ user, fetchUser }) {
                         <p className="text-sm text-gray-600 mt-2">{address.phone}</p>
                         <p className="text-sm text-gray-600 mt-2">{`${address.building}, ${address.street}${address.landmark ? ', ' : ''}${address.landmark ?? ''}`}</p>
                         <p className="text-sm text-gray-600 mt-2">{`${address.locality}, ${address.city}, ${address.state}, ${address.pin}`}</p>
-                        {editMode < -1 && <div className="mt-4 flex gap-2">
+                        {editMode < -1 && !loadingAddresses && <div className="mt-4 flex gap-2">
                           <Button variant="outline" className="border-[#8B5A2B] text-[#8B5A2B]" onClick={() => setEditMode(index)}>
                             Edit
                           </Button>

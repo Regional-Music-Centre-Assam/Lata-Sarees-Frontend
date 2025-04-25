@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Edit, ChevronUp } from 'lucide-react';
+import { Edit, LoaderCircle } from 'lucide-react';
 import PropTypes from 'prop-types';
+import { ListCreateRetrieveUpdateRemoveAddress } from '../Api';
+import { Button } from './ui/Button';
+import toast from 'react-hot-toast';
 
 Checkout.propTypes = {
   cart: PropTypes.arrayOf(
@@ -20,181 +23,65 @@ Checkout.propTypes = {
       }),
     })
   ).isRequired,
-  totalPrice: PropTypes.number.isRequired
+  cartLoading: PropTypes.number.isRequired,
+  totalPrice: PropTypes.number.isRequired,
+  totalMrp: PropTypes.number.isRequired,
+  selectedAddressId: PropTypes.number,
+  setSelectedAddressId: PropTypes.func.isRequired,
 };
 
-export function Checkout({ cart, totalPrice }) {
+export function Checkout({ cart, cartLoading, totalPrice, totalMrp, selectedAddressId, setSelectedAddressId }) {
   const navigate = useNavigate();
-  const [showAddressForm, setShowAddressForm] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "Home",
-      street: "123 Main St",
-      city: "Mumbai",
-      state: "Maharashtra",
-      pin: "400001",
-      phone: "9876543210"
-    },
-    {
-      id: 2,
-      name: "Work",
-      street: "456 Business Park",
-      city: "Bangalore",
-      state: "Karnataka",
-      pin: "560001",
-      phone: "9876543211"
-    }
-  ]);
+  const [addresses, setAddresses] = useState([]);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+
+  const fetchAddresses = async () => {
+    setLoadingAddresses(true);
+    var fetchedAddresses = await ListCreateRetrieveUpdateRemoveAddress({ data: null, id: null, remove: false });
+    if (fetchedAddresses)
+      setAddresses(fetchedAddresses);
+    setLoadingAddresses(false);
+  }
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedAddress) return;
-    navigate('/placeorder');
-  };
-
-  const handleAddAddress = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const newAddress = {
-      id: addresses.length + 1,
-      name: form.addressName.value,
-      street: form.street.value,
-      city: form.city.value,
-      state: form.state.value,
-      pin: form.pin.value,
-      phone: form.phone.value
-    };
-    setAddresses([...addresses, newAddress]);
-    setSelectedAddress(newAddress.id);
-    setShowAddressForm(false);
-    form.reset();
+    if (!selectedAddressId)
+      toast.error('Please select a delivery address');
+    else
+      navigate('/placeorder');
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Address Section */}
         <div className="md:col-span-2 space-y-4">
           <div className="bg-white p-4 rounded-lg border">
             <div className="flex justify-between items-center mb-3">
               <h2 className="font-medium">Select Delivery Address</h2>
-              <button
-                onClick={() => setShowAddressForm(!showAddressForm)}
-                className="text-sm flex items-center text-blue-600"
-              >
-                {showAddressForm ? (
-                  <>
-                    <ChevronUp className="w-4 h-4 mr-1" /> Hide
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4 mr-1" /> Add New
-                  </>
-                )}
-              </button>
             </div>
-
-            {/* Address Form (Collapsible) */}
-            {showAddressForm && (
-              <form
-                onSubmit={handleAddAddress}
-                className="mb-4 p-4 bg-gray-50 rounded-lg"
-              >
-                <div className="grid grid-cols-2 gap-3 mb-3">
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">
-                      Address Name
-                    </label>
-                    <input
-                      name="addressName"
-                      type="text"
-                      placeholder="Home/Work"
-                      className="w-full p-2 text-sm border rounded"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">
-                      Phone
-                    </label>
-                    <input
-                      name="phone"
-                      type="tel"
-                      className="w-full p-2 text-sm border rounded"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label className="block text-sm text-gray-600 mb-1">
-                    Street
-                  </label>
-                  <input
-                    name="street"
-                    type="text"
-                    className="w-full p-2 text-sm border rounded"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-3 gap-3 mb-3">
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">
-                      City
-                    </label>
-                    <input
-                      name="city"
-                      type="text"
-                      className="w-full p-2 text-sm border rounded"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">
-                      State
-                    </label>
-                    <input
-                      name="state"
-                      type="text"
-                      className="w-full p-2 text-sm border rounded"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">
-                      PIN Code
-                    </label>
-                    <input
-                      name="pin"
-                      type="text"
-                      className="w-full p-2 text-sm border rounded"
-                      required
-                    />
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-2 text-sm rounded"
-                >
-                  Save Address
-                </button>
-              </form>
-            )}
 
             {/* Address List */}
             <div className="space-y-3 max-h-96 overflow-y-auto">
-              {addresses.map((address) => (
+              {loadingAddresses ? (
+                <div className="text-center py-8">
+                  <LoaderCircle className="w-8 h-8 mx-auto text-gray-500 animate-spin" />
+                </div>
+              ) : addresses.map((address) => (
                 <div
                   key={address.id}
-                  onClick={() => setSelectedAddress(address.id)}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedAddress === address.id
-                      ? "border-blue-500 bg-blue-50"
-                      : "hover:bg-gray-50"
-                  }`}
+                  onClick={() => setSelectedAddressId(address.id)}
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${selectedAddressId === address.id
+                    ? "border-blue-500 bg-blue-50"
+                    : "hover:bg-gray-50"
+                    }`}
                 >
                   <div className="flex justify-between">
                     <span className="font-medium">{address.name}</span>
@@ -223,7 +110,11 @@ export function Checkout({ cart, totalPrice }) {
             Order Summary
           </h2>
 
-          {cart.length === 0 ? (
+          {cartLoading > -2 ? (
+            <div className="text-center py-8">
+              <LoaderCircle className="w-8 h-8 mx-auto text-gray-500 animate-spin" />
+            </div>
+          ) : cart.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-500 mb-4">Your cart is empty</p>
               <Link
@@ -236,59 +127,81 @@ export function Checkout({ cart, totalPrice }) {
           ) : (
             <>
               <div className="divide-y divide-gray-200">
-                {cart.map((item) => (
-                  <div key={item.id} className="py-4 flex justify-between">
-                    <div className="flex items-center">
+                {cart.map((entry) => {
+                  const item = entry.variant;
+                  const variant = item.variants[item.selected_variant]
+
+                  var price = 0;
+                  if (variant.pricing) {
+                    const pricingTier = variant.pricing.find((p) => {
+                      if (p.maxQuantity === null) return entry.quantity >= p.minQuantity;
+                      return entry.quantity >= p.minQuantity && entry.quantity <= p.maxQuantity;
+                    });
+                    price = pricingTier ? pricingTier.price : 0;
+                  }
+
+                  return <div key={entry.id} className="flex items-start justify-between py-4">
+                    <div className="flex items-start gap-4">
                       <img
                         src={
                           item.variants &&
-                          item.variants[item.selected_variant] &&
-                          item.variants[item.selected_variant].images[0]
-                            ? item.variants[item.selected_variant].images[0]
+                            variant &&
+                            variant.images[0]
+                            ? variant.images[0]
                             : "/placeholder.svg"
                         }
-                        alt={item.name}
+                        alt={`${item.name} (${variant.name})`}
                         className="w-16 h-16 object-cover rounded-md"
                       />
-                      <div className="ml-4">
-                        <h3 className="text-sm font-medium text-gray-900">
-                          {item.name}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Qty: {item.quantity}
-                        </p>
+                      <div className="flex-1">
+                        <p className="text-lg">{`${item.name} (${variant.name})`}</p>
+                        <div>
+                          <span className='text-lg text-gray-800'>₹{price * entry.quantity}</span>
+                          {variant.mrp > price && <>
+                            <span className='text-gray-500 line-through ms-1'>₹{variant.mrp * entry.quantity}</span>
+                            <span className='text-gray-500 ms-2'>{(() => {
+                              const discount = (variant.mrp - price) / variant.mrp * 100;
+                              return `(${discount.toFixed(0)}% off)`;
+                            })()}</span>
+                          </>}
+                        </div>
+                        <div>
+                          <span className='text-gray-500 ms-1'>{entry.quantity} x</span>
+                          <span className='text-gray-500'>₹{price}</span>
+                          {variant.mrp > price && <span className='text-gray-500 line-through ms-1'>₹{variant.mrp}</span>}
+                        </div>
                       </div>
                     </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {item.price}
-                    </p>
                   </div>
-                ))}
+                })}
               </div>
 
               <div className="mt-6 border-t border-gray-200 pt-6">
-                <div className="flex justify-between text-base font-medium text-gray-900">
-                  <p>Subtotal</p>
-                  <p>${totalPrice.toFixed(2)}</p>
-                </div>
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <p>Shipping</p>
-                  <p>Calculated at next step</p>
-                </div>
-                <div className="flex justify-between text-lg font-medium text-gray-900 mt-4">
-                  <p>Total</p>
-                  <p>${totalPrice.toFixed(2)}</p>
+                <div className="flex justify-between mb-4">
+                  <span className="font-bold">Subtotal</span>
+                  <span className='text-end flex flex-col align-end'>
+                    <div>
+                      <span className='font-bold'>
+                        ₹{(totalPrice).toFixed(2)}
+                      </span>
+                      {(() => {
+                        const savings = (totalMrp - totalPrice);
+                        return savings > 0 ? <span className='text-gray-500 ms-2'>{`(saved ₹${savings.toFixed(0)})`}</span> : '';
+                      })()}
+                    </div>
+                    <div>
+                      {totalMrp > totalPrice && <span className='text-gray-500 line-through'>₹{totalMrp.toFixed(2)}</span>}
+                      {(() => {
+                        const discount = (totalMrp - totalPrice) / totalMrp * 100;
+                        return discount > 0 ? <span className='text-gray-500 ms-2'>{`(${discount.toFixed(0)}% off)`}</span> : '';
+                      })()}
+                    </div>
+                  </span>
                 </div>
                 {/* Place Order Button */}
-                <Link to='/placeorder'>
-                <button
-                  
-                  className="mt-6 w-full bg-black text-white py-3 rounded-md hover:bg-gray-700 transition-colors"
-                >
+                <Button className="mt-6 w-full bg-black text-white py-3 rounded-md hover:bg-gray-700 transition-colors" onClick={handleSubmit}>
                   Place Order
-                </button>
-                </Link>
-                
+                </Button>
               </div>
             </>
           )}

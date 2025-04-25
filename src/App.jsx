@@ -23,6 +23,7 @@ function App() {
   const [totalMrp, setTotalMrp] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartLoading, setCartLoading] = useState(-1);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
 
   const fetchUser = useCallback(async () => {
     const storedUser = localStorage.getItem('user');
@@ -85,11 +86,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetailPage listCart={listCart} />} />
-        <Route path="/checkout" element={<Checkout cart={cart} totalPrice={totalPrice} totalMrp={totalMrp} />} />
-        <Route path="/placeorder" element={<PlaceOrder cart={cart} />} />
-        <Route path="/ourcollection" element={<OurCollection />} />
+        <Route path="/checkout" element={<Checkout cart={cart} cartLoading={cartLoading} totalPrice={totalPrice} totalMrp={totalMrp} selectedAddressId={selectedAddressId} setSelectedAddressId={setSelectedAddressId} />} />
+        <Route path="/placeorder" element={<PlaceOrder totalPrice={totalPrice} totalMrp={totalMrp} selectedAddressId={selectedAddressId} />} />
+        <Route path="/ourcollection" element={<OurCollection  />} />
         <Route path="/myorders" element={<MyOrders />} />
-        <Route path="/profile" element={user == null ? <AuthPage fetchUser={fetchUser} /> : <ProfilePage user={user} fetchUser={fetchUser} />} />
+        <Route path="/profile/" element={user == null ? <AuthPage fetchUser={fetchUser} /> : <ProfilePage user={user} fetchUser={fetchUser} />} />
+        <Route path="/profile/orders" element={user == null ? <AuthPage fetchUser={fetchUser} /> : <ProfilePage user={user} fetchUser={fetchUser} initActiveTab="orders" />} />
+        <Route path="/profile/addresses" element={user == null ? <AuthPage fetchUser={fetchUser} /> : <ProfilePage user={user} fetchUser={fetchUser} initActiveTab="addresses" />} />
         <Route path="/profile/editprofile" element={user == null ? <AuthPage fetchUser={fetchUser} /> : <EditProfileSection user={user} fetchUser={fetchUser} />} />
       </Routes>
       <Footer />
