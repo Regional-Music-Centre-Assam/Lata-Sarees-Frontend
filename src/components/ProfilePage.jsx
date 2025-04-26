@@ -198,12 +198,12 @@ export function ProfilePage({ user, fetchUser, initActiveTab = "orders" }) {
                               <div className="flex-1">
                                 <p className="font-medium">{`${item.variant.name} (${item.variant.variants[item.variant.selected_variant].name})`}</p>
                                 <span className="text-sm text-gray-700 me-2">₹{item.price.toLocaleString()}</span>
-                                <span className="text-xs text-gray-500 line-through">₹{item.mrp.toLocaleString()}</span>
+                                {item.mrp > item.price && <span className="text-xs text-gray-500 line-through">₹{item.mrp.toLocaleString()}</span>}
                                 <p className="text-sm text-gray-700">Qty: {item.quantity}</p>
                               </div>
                               <div className="text-right">
                                 <p className="font-medium">₹{item.total_price.toLocaleString()}</p>
-                                <p className="text-xs text-gray-500 line-through">₹{item.total_mrp.toLocaleString()}</p>
+                                {item.total_mrp > item.total_price && <p className="text-xs text-gray-500 line-through">₹{item.total_mrp.toLocaleString()}</p>}
                                 {order.status === "D" && (
                                   <Button variant="link" className="text-[#8B5A2B] p-0 h-auto text-sm">
                                     Buy Again
@@ -228,7 +228,7 @@ export function ProfilePage({ user, fetchUser, initActiveTab = "orders" }) {
                           <div className="text-right">
                             <p className="text-sm text-gray-500">Total Amount</p>
                             <span className="font-medium text-lg me-2">₹{order.total_price.toLocaleString()}</span>
-                            <span className="text-xs line-through">₹{order.total_mrp.toLocaleString()}</span>
+                            {order.total_mrp > order.total_price && <span className="text-xs line-through">₹{order.total_mrp.toLocaleString()}</span>}
                           </div>
                         </div>
                       </div>

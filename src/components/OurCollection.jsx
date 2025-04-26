@@ -272,7 +272,7 @@ export function OurCollection() {
                   </div>}
                   <span className="font-medium">₹{variant.pricing.length > 1 ? minPrice === maxPrice ? minPrice : `${minPrice} - ${maxPrice}` : variant.pricing[0].price}</span>
                   <div>
-                    <span className="text-xs text-gray-500 line-through">₹{variant.mrp}</span>
+                    {variant.mrp > minPrice && <span className="text-xs text-gray-500 line-through">₹{variant.mrp}</span>}
                     {variant.mrp > minPrice && <span className='text-gray-500 ms-2'>{`${variant.pricing.length > 1 ? 'upto ' : ''}${((variant.mrp - minPrice) / variant.mrp * 100).toFixed(0)}% off`}</span>}
                   </div>
                 </div>

@@ -242,11 +242,11 @@ export function ProductDetailPage({ listCart }) {
             <p className="text-2xl font-semibold">
               <div>
                 <span>Total Price: ₹{totalPrice}</span>
-                <span className="text-sm text-gray-500 line-through ms-2">₹{quantity*variant.mrp}</span>
+                {quantity*variant.mrp > totalPrice && <span className="text-sm text-gray-500 line-through ms-2">₹{quantity*variant.mrp}</span>}
               </div>
               <div>
                 <span className="text-sm text-gray-500">₹{price}</span>
-                <span className="text-sm text-gray-500 line-through ms-2">₹{variant.mrp}</span>
+                {variant.mrp > price && <span className="text-sm text-gray-500 line-through ms-2">₹{variant.mrp}</span>}
                 <span className="text-sm text-gray-500 ms-2">{isFabric ? 'per meter' : 'per piece'}</span>
                 <span className="text-sm text-gray-500 ms-2">{(() => {
                   const discount = Math.round(((variant.mrp - price) / variant.mrp) * 100);
