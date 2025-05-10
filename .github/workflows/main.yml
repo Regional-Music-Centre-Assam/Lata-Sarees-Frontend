@@ -1,0 +1,46 @@
+name: Deploy Vite App to S3 with CloudFront Invalidation
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build the Vite app
+      run: npm run build
+
+    - name: Deploy to S3
+      uses: jakejarvis/s3-sync-action@v0.5.1
+      with:
+        args: --acl public-read --delete
+      env:
+        AWS_S3_BUCKET: lata-sarees
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: your-region
+        SOURCE_DIR: dist
+        DEST_DIR: dist
+
+    - name: Invalidate CloudFront cache
+      uses: chetan/invalidate-cloudfront-action@v2
+      with:
+        distribution-id: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        paths: "/dist/*"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ap-south-1
