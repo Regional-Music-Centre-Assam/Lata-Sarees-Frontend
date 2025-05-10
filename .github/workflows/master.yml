@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: Production
 
     steps:
     - name: Checkout code
@@ -30,19 +30,19 @@ jobs:
       with:
         args: --acl public-read --delete
       env:
-        AWS_S3_BUCKET: lata-sarees
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: your-region
+        AWS_REGION: ${{ vars.AWS_REGION }}
         SOURCE_DIR: dist
-        DEST_DIR: dist
+        DEST_DIR: ${{ vars.DEST_DIR }}
 
     - name: Invalidate CloudFront cache
       uses: chetan/invalidate-cloudfront-action@v2
       with:
         distribution-id: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
-        paths: "/dist/*"
+        paths: "/${{ vars.DEST_DIR }}/*"
       env:
         AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ap-south-1
+        AWS_REGION: ${{ vars.AWS_REGION }}
