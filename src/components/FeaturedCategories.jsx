@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import cat_1 from "../assets/silk.jpg";
-import cat_2 from "../assets/rayon.jpg";
-import cat_3 from "../assets/printed.jpg";
-import cat_4 from "../assets/cot.jpg";
-import cat_5 from "../assets/linen.jpg";
-import prod_1 from "../assets/bs_1.webp";
-import prod_2 from "../assets/bs_2.webp";
-import prod_3 from "../assets/bs_3.webp";
-import prod_4 from "../assets/bs_4.webp";
+import cat_1 from "../assets/category/printedfabric.jpg";
+import cat_2 from "../assets/category/plainfabric.jpg";
+import cat_3 from "../assets/category/embodered.jpg";
+import cat_4 from "../assets/category/sarees.jpg";
+import cat_5 from "../assets/category/suits.jpg";
+import prod_1 from "../assets/category/laheris.jpg";
+import prod_2 from "../assets/p_2.jpg";
+import prod_3 from "../assets/category/aces.jpg";
+import prod_4 from "../assets/category/beedsheet.jpg";
 
 const categories = [
   {

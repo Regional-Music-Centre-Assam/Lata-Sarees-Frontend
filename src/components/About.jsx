@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import teamPhoto from '../assets/girl.webp'; // Import your images
+import teamPhoto from '../assets/fabricabout.jpg'; // Import your images
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -135,7 +135,7 @@ export function ModernAboutSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left column - Image with parallax */}
           <div className="relative">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative max-h-[300px] lg:max-h-[700px] rounded-3xl overflow-hidden shadow-2xl">
               <img
                 ref={teamPhotoRef}
                 src={teamPhoto}
@@ -147,7 +147,7 @@ export function ModernAboutSection() {
             
             {/* Floating tag */}
             <div className="absolute -bottom-6 -right-6 bg-white px-6 py-3 rounded-full ">
-              <span className="font-thin text-2xl text-gray-700">Since 1985</span>
+              <span className="font-thin text-2xl text-gray-700">Since 2003</span>
             </div>
           </div>
 
@@ -162,21 +162,20 @@ export function ModernAboutSection() {
             
             <div className="space-y-6">
               <p className="about-text text-lg text-gray-600">
-                For three generations, our family has dedicated itself to the art of textile craftsmanship. 
-                Each fabric tells a story of tradition, innovation, and passion.
+               Founded in 2003 by Lalita Choraria from her own home, She began with a humble collection of Kota Munga sarees. What started as a small passion project by a dedicated housewife soon grew into a trusted name, driven by customer demand and a commitment to quality. By 2008, Lata Sarees proudly opened its first outlet, expanding its offerings to include a wide range of sarees like Supernet, Georgette, and work sarees, along with plain and boutique fabrics. Today, Lata Sarees is known as a one-stop destination for premium sarees, fabrics, suits, and bedsheets — blending tradition with elegance for every occasion.
               </p>
               
-              <p className="about-text text-lg text-gray-600">
+              {/* <p className="about-text text-lg text-gray-600">
                 We source only the finest materials from ethical suppliers, combining time-honored techniques 
                 with modern sustainable practices to create fabrics that stand the test of time.
-              </p>
+              </p> */}
             </div>
 
             {/* Stats grid */}
             <div className="grid grid-cols-2 gap-6 mt-12">
               <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-gray-100 shadow-sm">
                 <h3 className="text-4xl font-bold text-gray-700 mb-2">
-                  <span ref={el => statsRef.current[0] = el} data-target="37">0</span>+
+                  <span ref={el => statsRef.current[0] = el} data-target="21">0</span>+
                 </h3>
                 <p className="text-gray-500">Years of Experience</p>
               </div>
